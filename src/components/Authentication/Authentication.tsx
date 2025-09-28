@@ -1,10 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import { LoginForm } from "./components/LoginForm";
 import { RegisterForm } from "./components/RegisterForm";
 
 interface AuthPanelProps {
 	initialMode?: "login" | "register";
-	onAuthSuccess?: (user: unknown) => void;
+	onAuthSuccess?: (user: unknown, navigate: (path: string) => void) => void;
 	heading?: string;
 }
 
@@ -16,12 +17,14 @@ export const Authentication = ({
 	const [mode, setMode] = useState<"login" | "register">(initialMode);
 	const [justRegistered, setJustRegistered] = useState(false);
 
+	let navigate = useNavigate();
+
 	const handleSuccess = (cred: unknown) => {
 		if (mode === "register") {
 			setJustRegistered(true);
 			setMode("login");
 		}
-		if (onAuthSuccess) onAuthSuccess(cred);
+		if (onAuthSuccess) onAuthSuccess(cred, navigate);
 	};
 
 	return (
