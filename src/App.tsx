@@ -1,19 +1,10 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import { Authentication } from "./components/Authentication";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Home } from "./pages/Home";
 
 const appTitle = "Eat List";
-
-function HomePage() {
-	const { user, logout } = useAuth();
-	return (
-		<div className="p-8">
-			<h1>Welcome, {user?.email}</h1>
-			<button onClick={logout}>Logout</button>
-		</div>
-	);
-}
 
 export default function App() {
 	return (
@@ -33,7 +24,7 @@ export default function App() {
 						path="/"
 						element={
 							<ProtectedRoute>
-								<HomePage />
+								<Home />
 							</ProtectedRoute>
 						}
 					/>
