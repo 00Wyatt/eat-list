@@ -8,13 +8,13 @@ import { db } from "../../../firebase";
 import { FormSelect } from "./components/FormSelect";
 
 const schema = z.object({
-  monday: z.string(),
-  tuesday: z.string(),
-  wednesday: z.string(),
-  thursday: z.string(),
-  friday: z.string(),
-  saturday: z.string(),
-  sunday: z.string(),
+  Monday: z.string(),
+  Tuesday: z.string(),
+  Wednesday: z.string(),
+  Thursday: z.string(),
+  Friday: z.string(),
+  Saturday: z.string(),
+  Sunday: z.string(),
 });
 
 export type CreateListFormData = z.infer<typeof schema>;
@@ -31,7 +31,6 @@ export const CreateListForm = ({ mealList }: CreateListFormProps) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const onSubmit = async (data: CreateListFormData) => {
-    console.log(data);
     try {
       await setDoc(doc(db, "weeklyMeals", "current"), data);
       reset();
@@ -53,49 +52,49 @@ export const CreateListForm = ({ mealList }: CreateListFormProps) => {
         label="Monday"
         placeholder="Select a meal for Monday"
         mealList={mealList}
-        register={register("monday")}
+        register={register("Monday")}
       />
       <FormSelect
         id="tuesday"
         label="Tuesday"
         placeholder="Select a meal for Tuesday"
         mealList={mealList}
-        register={register("tuesday")}
+        register={register("Tuesday")}
       />
       <FormSelect
         id="wednesday"
         label="Wednesday"
         placeholder="Select a meal for Wednesday"
         mealList={mealList}
-        register={register("wednesday")}
+        register={register("Wednesday")}
       />
       <FormSelect
         id="thursday"
         label="Thursday"
         placeholder="Select a meal for Thursday"
         mealList={mealList}
-        register={register("thursday")}
+        register={register("Thursday")}
       />
       <FormSelect
         id="friday"
         label="Friday"
         placeholder="Select a meal for Friday"
         mealList={mealList}
-        register={register("friday")}
+        register={register("Friday")}
       />
       <FormSelect
         id="saturday"
         label="Saturday"
         placeholder="Select a meal for Saturday"
         mealList={mealList}
-        register={register("saturday")}
+        register={register("Saturday")}
       />
       <FormSelect
         id="sunday"
         label="Sunday"
         placeholder="Select a meal for Sunday"
         mealList={mealList}
-        register={register("sunday")}
+        register={register("Sunday")}
       />
       <button
         type="submit"
