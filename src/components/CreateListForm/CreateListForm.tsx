@@ -35,7 +35,7 @@ export const CreateListForm = ({ mealList }: CreateListFormProps) => {
     try {
       await setDoc(doc(db, "weeklyMeals", "current"), data);
       reset();
-      setSuccessMessage("Shopping list created successfully! Redirecting...");
+      setSuccessMessage("Shopping list created successfully!");
       setTimeout(() => {
         navigate("/");
       }, 3000);
@@ -103,7 +103,12 @@ export const CreateListForm = ({ mealList }: CreateListFormProps) => {
         Create List
       </button>
 
-      {successMessage && <p className="text-green-600">{successMessage}</p>}
+      {successMessage && (
+        <>
+          <p className="text-green-600">{successMessage}</p>
+          <p>Redirecting...</p>
+        </>
+      )}
     </form>
   );
 };
