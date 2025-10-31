@@ -28,14 +28,12 @@ export const Home = () => {
         <Separator.Root className="my-5 h-[1px] w-100 bg-gray-300" />
         <button
           onClick={logout}
-          className="cursor-pointer border border-gray-500 p-2 hover:bg-gray-200"
-        >
+          className="cursor-pointer border border-gray-500 p-2 hover:bg-gray-200">
           Logout
         </button>
         <button
           onClick={fetchMeals}
-          className="cursor-pointer border border-gray-500 p-2 hover:bg-gray-200"
-        >
+          className="cursor-pointer border border-gray-500 p-2 hover:bg-gray-200">
           Fetch Meals
         </button>
       </div>

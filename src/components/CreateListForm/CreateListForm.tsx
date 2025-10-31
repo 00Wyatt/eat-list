@@ -1,0 +1,93 @@
+import { useForm } from "react-hook-form";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { DocumentData } from "firebase/firestore";
+import { FormSelect } from "./components/FormSelect";
+
+const schema = z.object({
+  monday: z.string(),
+  tuesday: z.string(),
+  wednesday: z.string(),
+  thursday: z.string(),
+  friday: z.string(),
+  saturday: z.string(),
+  sunday: z.string(),
+});
+
+export type CreateListFormData = z.infer<typeof schema>;
+
+type CreateListFormProps = {
+  mealList: DocumentData[];
+};
+
+export const CreateListForm = ({ mealList }: CreateListFormProps) => {
+  const { register, handleSubmit, reset } = useForm<CreateListFormData>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = async (data: CreateListFormData) => {
+    console.log(data);
+    reset();
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex w-full flex-col gap-3">
+      <FormSelect
+        id="monday"
+        label="Monday"
+        placeholder="Select a meal for Monday"
+        mealList={mealList}
+        register={register("monday")}
+      />
+      <FormSelect
+        id="tuesday"
+        label="Tuesday"
+        placeholder="Select a meal for Tuesday"
+        mealList={mealList}
+        register={register("tuesday")}
+      />
+      <FormSelect
+        id="wednesday"
+        label="Wednesday"
+        placeholder="Select a meal for Wednesday"
+        mealList={mealList}
+        register={register("wednesday")}
+      />
+      <FormSelect
+        id="thursday"
+        label="Thursday"
+        placeholder="Select a meal for Thursday"
+        mealList={mealList}
+        register={register("thursday")}
+      />
+      <FormSelect
+        id="friday"
+        label="Friday"
+        placeholder="Select a meal for Friday"
+        mealList={mealList}
+        register={register("friday")}
+      />
+      <FormSelect
+        id="saturday"
+        label="Saturday"
+        placeholder="Select a meal for Saturday"
+        mealList={mealList}
+        register={register("saturday")}
+      />
+      <FormSelect
+        id="sunday"
+        label="Sunday"
+        placeholder="Select a meal for Sunday"
+        mealList={mealList}
+        register={register("sunday")}
+      />
+      <button
+        type="submit"
+        className="cursor-pointer self-start border border-gray-500 p-2 hover:bg-gray-200">
+        Create List
+      </button>
+    </form>
+  );
+};
