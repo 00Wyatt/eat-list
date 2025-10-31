@@ -1,7 +1,10 @@
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { DocumentData } from "firebase/firestore";
+import { doc, setDoc, type DocumentData } from "firebase/firestore";
+import { db } from "../../../firebase";
 import { FormSelect } from "./components/FormSelect";
 
 const schema = z.object({
@@ -24,10 +27,21 @@ export const CreateListForm = ({ mealList }: CreateListFormProps) => {
   const { register, handleSubmit, reset } = useForm<CreateListFormData>({
     resolver: zodResolver(schema),
   });
+  const navigate = useNavigate();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const onSubmit = async (data: CreateListFormData) => {
     console.log(data);
-    reset();
+    try {
+      await setDoc(doc(db, "weeklyMeals", "current"), data);
+      reset();
+      setSuccessMessage("Shopping list created successfully! Redirecting...");
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -88,6 +102,8 @@ export const CreateListForm = ({ mealList }: CreateListFormProps) => {
         className="cursor-pointer self-start border border-gray-500 p-2 hover:bg-gray-200">
         Create List
       </button>
+
+      {successMessage && <p className="text-green-600">{successMessage}</p>}
     </form>
   );
 };

@@ -20,8 +20,8 @@ export const CreateList = () => {
 
   return (
     <div className="p-8">
-      <div className="flex max-w-64 flex-col gap-4">
-        <h1 className="text-2xl font-medium">Create A Shopping List</h1>
+      <div className="flex max-w-80 flex-col gap-4">
+        <h1 className="text-2xl font-medium">Select This Week's Meals</h1>
         <div>
           <CreateListForm mealList={mealData} />
         </div>
