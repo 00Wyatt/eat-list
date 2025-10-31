@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import { deleteDoc, doc, type DocumentData } from "firebase/firestore";
 import { Separator } from "radix-ui";
 import { useAuth } from "@/contexts/AuthContext";
@@ -70,9 +71,9 @@ export const Home = () => {
         ) : (
           <p>No meals selected for this week.</p>
         )}
-        <a href="/create-list" className="text-blue-500 hover:underline">
+        <Link to="/create-list" className="text-blue-500 hover:underline">
           {weeklyMealList ? "Create New Shopping List" : "Create Shopping List"}
-        </a>
+        </Link>
         {weeklyMealList && (
           <button
             onClick={handleClearWeeklyMeals}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import type { DocumentData } from "firebase/firestore";
 import { useCollection } from "@/hooks/useCollection";
 import { CreateListForm } from "@/components/CreateListForm/CreateListForm";
@@ -22,9 +23,10 @@ export const CreateList = () => {
     <div className="p-8">
       <div className="flex max-w-80 flex-col gap-4">
         <h1 className="text-2xl font-medium">Select This Week's Meals</h1>
-        <div>
-          <CreateListForm mealList={mealData} />
-        </div>
+        <CreateListForm mealList={mealData} />
+        <Link to="/" className="text-blue-500 hover:underline">
+          Return to Home
+        </Link>
       </div>
     </div>
   );
