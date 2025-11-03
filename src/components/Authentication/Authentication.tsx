@@ -1,62 +1,25 @@
-import { useState } from "react";
 import { useNavigate } from "react-router";
 import { LoginForm } from "./components/LoginForm";
-import { RegisterForm } from "./components/RegisterForm";
 
 interface AuthPanelProps {
-	initialMode?: "login" | "register";
-	onAuthSuccess?: (user: unknown, navigate: (path: string) => void) => void;
-	heading?: string;
+  onAuthSuccess?: (user: unknown, navigate: (path: string) => void) => void;
+  heading?: string;
 }
 
 export const Authentication = ({
-	initialMode = "login",
-	onAuthSuccess,
-	heading = "Welcome",
+  onAuthSuccess,
+  heading = "Welcome",
 }: AuthPanelProps) => {
-	const [mode, setMode] = useState<"login" | "register">(initialMode);
-	const [justRegistered, setJustRegistered] = useState(false);
+  let navigate = useNavigate();
 
-	let navigate = useNavigate();
+  const handleSuccess = (cred: unknown) => {
+    if (onAuthSuccess) onAuthSuccess(cred, navigate);
+  };
 
-	const handleSuccess = (cred: unknown) => {
-		if (mode === "register") {
-			setJustRegistered(true);
-			setMode("login");
-		}
-		if (onAuthSuccess) onAuthSuccess(cred, navigate);
-	};
-
-	return (
-		<div className="max-w-sm mx-auto p-6 border rounded shadow flex flex-col gap-4">
-			<h2 className="text-xl font-semibold text-center">{heading}</h2>
-			{justRegistered && (
-				<div className="text-green-600 text-sm text-center">
-					Account created. Please log in.
-				</div>
-			)}
-			{mode === "login" ? (
-				<LoginForm onSuccess={handleSuccess} />
-			) : (
-				<RegisterForm onSuccess={handleSuccess} />
-			)}
-			<div className="text-sm text-center">
-				{mode === "login" ? (
-					<button
-						type="button"
-						className="text-blue-600 hover:underline"
-						onClick={() => setMode("register")}>
-						Need an account? Register
-					</button>
-				) : (
-					<button
-						type="button"
-						className="text-blue-600 hover:underline"
-						onClick={() => setMode("login")}>
-						Already have an account? Log in
-					</button>
-				)}
-			</div>
-		</div>
-	);
+  return (
+    <div className="mx-auto my-6 flex max-w-sm flex-col gap-4 rounded border p-6 shadow">
+      <h2 className="text-center text-xl font-semibold">{heading}</h2>
+      <LoginForm onSuccess={handleSuccess} />
+    </div>
+  );
 };
