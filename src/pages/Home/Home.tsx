@@ -10,6 +10,7 @@ import {
 } from "@/utils/mealsHelpers";
 import { createShoppingList } from "@/utils/shoppingListHelpers";
 import type { Meal, WeeklyMeal } from "@/types";
+import { ShoppingList } from "@/components/ShoppingList";
 
 export const Home = () => {
   const { user, logout } = useAuth();
@@ -32,19 +33,7 @@ export const Home = () => {
         {shoppingList.length > 0 && (
           <>
             <Separator.Root className="my-2 h-[1px] w-100 bg-gray-300" />
-            <h2 className="text-lg font-medium">Shopping List</h2>
-            <ul>
-              {shoppingList.map((ingredient, index) => (
-                <li key={index}>
-                  <span className="mr-1 font-medium">
-                    {ingredient.quantityRounded} x {ingredient.name}
-                  </span>{" "}
-                  <span className="text-gray-600">
-                    ({ingredient.quantity} x {ingredient.unit})
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <ShoppingList shoppingList={shoppingList} />
           </>
         )}
         {weeklyMealsList ? (

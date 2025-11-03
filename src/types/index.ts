@@ -1,6 +1,7 @@
 export type Ingredient = {
   name: string;
   quantity: number;
+  quantityRounded?: number;
   unit: string;
 };
 
