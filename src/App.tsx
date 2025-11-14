@@ -30,7 +30,7 @@ export default function App() {
             }
           />
           <Route
-            path="/create-list"
+            path="/select-meals"
             element={
               <ProtectedRoute>
                 <SelectMeals />

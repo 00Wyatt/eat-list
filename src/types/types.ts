@@ -13,6 +13,7 @@ export type Meal = {
 export type WeeklyMeals = Record<string, string>;
 
 export type ShoppingListItem = {
+  checked: boolean;
   name: string;
   quantity: number;
   quantityRounded: number;

@@ -1,25 +1,28 @@
-import { useState } from "react";
 import { Checkbox } from "radix-ui";
-import { LuCheck } from "react-icons/lu";
+import { LuCheck, LuX } from "react-icons/lu";
 import type { ShoppingListItem } from "@/types";
 
 type ShoppingListItemProps = {
   shoppingListItem: ShoppingListItem;
+  onRemove: () => void;
+  onToggleChecked: () => void;
 };
 
 export const ShoppingListItemComponent = ({
   shoppingListItem,
+  onRemove,
+  onToggleChecked,
 }: ShoppingListItemProps) => {
-  const [checked, setChecked] = useState<Checkbox.CheckedState>(false);
-
-  const checkedStyle = checked ? "line-through text-gray-500" : "";
+  const checkedStyle = shoppingListItem.checked
+    ? "line-through text-gray-500"
+    : "";
 
   return (
     <li className={`flex items-center gap-2 ${checkedStyle}`}>
       <Checkbox.Root
         id={shoppingListItem.name}
-        checked={checked}
-        onCheckedChange={setChecked}
+        checked={shoppingListItem.checked}
+        onCheckedChange={onToggleChecked}
         className="flex h-4 w-4 items-center justify-center rounded bg-gray-300">
         <Checkbox.Indicator className="text-black">
           <LuCheck />
@@ -33,6 +36,14 @@ export const ShoppingListItemComponent = ({
           ({shoppingListItem.quantity} x {shoppingListItem.unit})
         </span>
       </label>
+      {onRemove && (
+        <button
+          type="button"
+          className="cursor-pointer p-1 text-red-700 hover:text-red-900"
+          onClick={onRemove}>
+          <LuX />
+        </button>
+      )}
     </li>
   );
 };

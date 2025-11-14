@@ -40,6 +40,7 @@ export function useShoppingList() {
         ...ingredient,
         quantity: Math.round(ingredient.quantity * 100) / 100,
         quantityRounded: Math.max(1, Math.round(ingredient.quantity)),
+        checked: false,
       }));
 
       await setDoc(doc(db, "shoppingList", "current"), {
@@ -60,10 +61,34 @@ export function useShoppingList() {
     }
   }, []);
 
+  const removeShoppingListItem = useCallback(
+    async (name: string) => {
+      if (!shoppingList) return;
+      const updatedList = shoppingList.filter((item) => item.name !== name);
+      await setDoc(doc(db, "shoppingList", "current"), { items: updatedList });
+      setShoppingList(updatedList);
+    },
+    [shoppingList],
+  );
+
+  const toggleChecked = useCallback(
+    async (name: string) => {
+      if (!shoppingList) return;
+      const updatedList = shoppingList.map((item) =>
+        item.name === name ? { ...item, checked: !item.checked } : item,
+      );
+      await setDoc(doc(db, "shoppingList", "current"), { items: updatedList });
+      setShoppingList(updatedList);
+    },
+    [shoppingList],
+  );
+
   return {
     shoppingList,
     fetchShoppingList,
     createShoppingList,
     clearShoppingList,
+    removeShoppingListItem,
+    toggleChecked,
   };
 }

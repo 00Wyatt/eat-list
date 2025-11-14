@@ -3,9 +3,15 @@ import { ShoppingListItemComponent } from "./components/ShoppingListItemComponen
 
 type ShoppingListProps = {
   shoppingList: ShoppingListItem[];
+  onRemove: (itemName: string) => void;
+  onToggleChecked: (itemName: string) => void;
 };
 
-export const ShoppingList = ({ shoppingList }: ShoppingListProps) => {
+export const ShoppingList = ({
+  shoppingList,
+  onRemove,
+  onToggleChecked,
+}: ShoppingListProps) => {
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-lg font-medium">Shopping List</h2>
@@ -14,6 +20,8 @@ export const ShoppingList = ({ shoppingList }: ShoppingListProps) => {
           <ShoppingListItemComponent
             key={shoppingListItem.name}
             shoppingListItem={shoppingListItem}
+            onRemove={() => onRemove(shoppingListItem.name)}
+            onToggleChecked={() => onToggleChecked(shoppingListItem.name)}
           />
         ))}
       </ul>

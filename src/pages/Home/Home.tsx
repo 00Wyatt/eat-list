@@ -12,8 +12,13 @@ export const Home = () => {
   const { user, logout } = useAuth();
 
   const { meals, fetchMeals } = useMeals();
-  const { shoppingList, fetchShoppingList, clearShoppingList } =
-    useShoppingList();
+  const {
+    shoppingList,
+    fetchShoppingList,
+    clearShoppingList,
+    removeShoppingListItem,
+    toggleChecked,
+  } = useShoppingList();
   const { weeklyMeals, fetchWeeklyMeals, clearWeeklyMeals } = useWeeklyMeals();
 
   useEffect(() => {
@@ -29,7 +34,11 @@ export const Home = () => {
         {shoppingList && shoppingList.length > 0 && (
           <>
             <Separator.Root className="my-2 h-[1px] w-100 bg-gray-300" />
-            <ShoppingList shoppingList={shoppingList} />
+            <ShoppingList
+              shoppingList={shoppingList}
+              onRemove={removeShoppingListItem}
+              onToggleChecked={toggleChecked}
+            />
           </>
         )}
         {weeklyMeals ? (
@@ -61,7 +70,7 @@ export const Home = () => {
         ) : (
           <p>No meals selected for this week.</p>
         )}
-        <Link to="/create-list" className="text-blue-500 hover:underline">
+        <Link to="/select-meals" className="text-blue-500 hover:underline">
           {weeklyMeals ? "Select New Meals" : "Select This Week's Meals"}
         </Link>
         <Separator.Root className="my25 h-[1px] w-100 bg-gray-300" />
