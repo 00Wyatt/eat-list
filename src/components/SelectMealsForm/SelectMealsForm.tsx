@@ -3,9 +3,11 @@ import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { doc, setDoc, type DocumentData } from "firebase/firestore";
-import { db } from "../../../firebase";
+import { type DocumentData } from "firebase/firestore";
 import { FormSelect } from "./components/FormSelect";
+import type { Meal } from "@/types";
+import { useShoppingList } from "@/hooks";
+import { useWeeklyMeals } from "@/hooks";
 
 const schema = z.object({
   Monday: z.string(),
@@ -17,27 +19,32 @@ const schema = z.object({
   Sunday: z.string(),
 });
 
-export type CreateListFormData = z.infer<typeof schema>;
+export type SelectMealsFormData = z.infer<typeof schema>;
 
-type CreateListFormProps = {
+type SelectMealsFormProps = {
   mealList: DocumentData[];
 };
 
-export const CreateListForm = ({ mealList }: CreateListFormProps) => {
-  const { register, handleSubmit, reset } = useForm<CreateListFormData>({
+export const SelectMealsForm = ({ mealList }: SelectMealsFormProps) => {
+  const { register, handleSubmit } = useForm<SelectMealsFormData>({
     resolver: zodResolver(schema),
   });
   const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const onSubmit = async (data: CreateListFormData) => {
+  const { createWeeklyMeals } = useWeeklyMeals();
+  const { createShoppingList } = useShoppingList();
+
+  const onSubmit = async (data: SelectMealsFormData) => {
     try {
-      await setDoc(doc(db, "weeklyMeals", "current"), data);
-      reset();
-      setSuccessMessage("Shopping list created successfully!");
+      const weeklyMealsList = await createWeeklyMeals(data);
+
+      setSuccessMessage("Meals selected successfully!");
+
+      await createShoppingList(weeklyMealsList, mealList as Meal[]);
       setTimeout(() => {
         navigate("/");
-      }, 3000);
+      }, 2000);
     } catch (error) {
       console.error(error);
     }

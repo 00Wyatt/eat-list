@@ -1,60 +1,59 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router";
 import { Separator } from "radix-ui";
 import { useAuth } from "@/contexts/AuthContext";
-import {
-  clearWeeklyMeals,
-  fetchMeals,
-  fetchWeeklyMeals,
-  getMealNameById,
-} from "@/utils/mealsHelpers";
-import { createShoppingList } from "@/utils/shoppingListHelpers";
-import type { Meal, WeeklyMeal } from "@/types";
+import { getMealNameById } from "@/utils/helpers";
 import { ShoppingList } from "@/components/ShoppingList";
+import { useShoppingList } from "@/hooks";
+import { useWeeklyMeals } from "@/hooks";
+import { useMeals } from "@/hooks";
 
 export const Home = () => {
   const { user, logout } = useAuth();
-  const [mealsList, setMealsList] = useState<Meal[] | null>(null);
-  const [weeklyMealsList, setWeeklyMealsList] = useState<WeeklyMeal | null>(
-    null,
-  );
+
+  const { meals, fetchMeals } = useMeals();
+  const { shoppingList, fetchShoppingList, clearShoppingList } =
+    useShoppingList();
+  const { weeklyMeals, fetchWeeklyMeals, clearWeeklyMeals } = useWeeklyMeals();
 
   useEffect(() => {
-    fetchMeals(setMealsList);
-    fetchWeeklyMeals(setWeeklyMealsList);
+    fetchMeals();
+    fetchWeeklyMeals();
+    fetchShoppingList();
   }, []);
-
-  const shoppingList = createShoppingList(weeklyMealsList, mealsList);
 
   return (
     <div className="p-8">
       <div className="flex max-w-80 flex-col items-start gap-4">
         <h1 className="text-xl font-medium">Welcome, {user?.email}</h1>
-        {shoppingList.length > 0 && (
+        {shoppingList && shoppingList.length > 0 && (
           <>
             <Separator.Root className="my-2 h-[1px] w-100 bg-gray-300" />
             <ShoppingList shoppingList={shoppingList} />
           </>
         )}
-        {weeklyMealsList ? (
+        {weeklyMeals ? (
           <>
             <Separator.Root className="my-2 h-[1px] w-100 bg-gray-300" />
             <h2 className="text-lg font-medium">This Week's Meals:</h2>
             <ul>
-              {Object.entries(weeklyMealsList).map(
+              {Object.entries(weeklyMeals).map(
                 ([day, mealId]) =>
                   mealId && (
                     <li key={day}>
                       {day}:{" "}
                       <span className="font-medium">
-                        {getMealNameById(mealsList, mealId)}
+                        {getMealNameById(meals, mealId)}
                       </span>
                     </li>
                   ),
               )}
             </ul>
             <button
-              onClick={() => clearWeeklyMeals(setWeeklyMealsList)}
+              onClick={() => {
+                clearWeeklyMeals();
+                clearShoppingList();
+              }}
               className="cursor-pointer text-red-700 hover:underline">
               Clear Meals
             </button>
@@ -63,7 +62,7 @@ export const Home = () => {
           <p>No meals selected for this week.</p>
         )}
         <Link to="/create-list" className="text-blue-500 hover:underline">
-          {weeklyMealsList ? "Select New Meals" : "Select This Week's Meals"}
+          {weeklyMeals ? "Select New Meals" : "Select This Week's Meals"}
         </Link>
         <Separator.Root className="my25 h-[1px] w-100 bg-gray-300" />
         <div className="flex gap-4">

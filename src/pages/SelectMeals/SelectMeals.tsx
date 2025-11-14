@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import type { DocumentData } from "firebase/firestore";
-import { useCollection } from "@/hooks/useCollection";
-import { CreateListForm } from "@/components/CreateListForm/CreateListForm";
+import { useCollection } from "@/hooks";
+import { SelectMealsForm } from "@/components/SelectMealsForm";
 
-export const CreateList = () => {
+export const SelectMeals = () => {
   const meals = useCollection("meals");
   const [mealData, setMealData] = useState<DocumentData[]>([]);
 
@@ -23,8 +23,8 @@ export const CreateList = () => {
     <div className="p-8">
       <div className="flex max-w-80 flex-col gap-4">
         <h1 className="text-2xl font-medium">Select This Week's Meals</h1>
-        <CreateListForm mealList={mealData} />
-        <Link to="/" className="text-blue-500 hover:underline">
+        <SelectMealsForm mealList={mealData} />
+        <Link to="/" className="self-start text-blue-500 hover:underline">
           Return to Home
         </Link>
       </div>

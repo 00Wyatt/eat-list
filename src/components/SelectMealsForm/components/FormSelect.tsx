@@ -1,5 +1,5 @@
-import type { DocumentData } from "firebase/firestore";
 import type { UseFormRegisterReturn } from "react-hook-form";
+import type { DocumentData } from "firebase/firestore";
 
 type FormSelectProps = {
   id: string;
