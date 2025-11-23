@@ -10,6 +10,8 @@ import { useWeeklyMeals } from "@/hooks";
 import { useMeals } from "@/hooks";
 import { ConfirmationDialog } from "@/components/common/ConfirmationDialog/ConfirmationDialog";
 
+declare const __APP_VERSION__: string;
+
 export const Home = () => {
   const { user, logout } = useAuth();
 
@@ -35,7 +37,7 @@ export const Home = () => {
         <h1 className="text-xl font-medium">Welcome, {user?.email}</h1>
         {shoppingList && shoppingList.length > 0 && (
           <>
-            <Separator.Root className="my-2 h-[1px] w-100 bg-gray-300" />
+            <Separator.Root className="my-2 h-[1px] w-full bg-gray-300" />
             <ShoppingList
               shoppingList={shoppingList}
               onRemove={removeShoppingListItem}
@@ -46,7 +48,7 @@ export const Home = () => {
         )}
         {weeklyMeals ? (
           <>
-            <Separator.Root className="my-2 h-[1px] w-100 bg-gray-300" />
+            <Separator.Root className="my-2 h-[1px] w-full bg-gray-300" />
             <h2 className="text-lg font-medium">This Week's Meals:</h2>
             <ul>
               {Object.entries(weeklyMeals).map(([day, mealId]) => {
@@ -85,7 +87,7 @@ export const Home = () => {
         <Link to="/select-meals" className="text-blue-500 hover:underline">
           {weeklyMeals ? "Select New Meals" : "Select This Week's Meals"}
         </Link>
-        <Separator.Root className="my25 h-[1px] w-100 bg-gray-300" />
+        <Separator.Root className="my25 h-[1px] w-full bg-gray-300" />
         <div className="flex gap-4">
           <button
             onClick={logout}
@@ -93,6 +95,7 @@ export const Home = () => {
             Logout
           </button>
         </div>
+        <footer className="mt-4 text-xs">Version: {__APP_VERSION__}</footer>
       </div>
     </div>
   );
