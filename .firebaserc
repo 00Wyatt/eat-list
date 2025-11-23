@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "eat-list-c6e71"
-  }
+    "qual": "eat-list-qual",
+    "prod": "eat-list-prod"
+  },
+  "targets": {},
+  "etags": {}
 }
