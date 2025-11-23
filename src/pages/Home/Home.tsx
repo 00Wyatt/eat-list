@@ -2,11 +2,13 @@ import { useEffect } from "react";
 import { Link } from "react-router";
 import { Separator } from "radix-ui";
 import { useAuth } from "@/contexts/AuthContext";
-import { getMealNameById } from "@/utils/helpers";
+import { getMealById } from "@/utils/helpers";
 import { ShoppingList } from "@/components/ShoppingList";
+import { Modal } from "@/components/Modal";
 import { useShoppingList } from "@/hooks";
 import { useWeeklyMeals } from "@/hooks";
 import { useMeals } from "@/hooks";
+import { ConfirmationDialog } from "@/components/common/ConfirmationDialog/ConfirmationDialog";
 
 export const Home = () => {
   const { user, logout } = useAuth();
@@ -38,6 +40,7 @@ export const Home = () => {
               shoppingList={shoppingList}
               onRemove={removeShoppingListItem}
               onToggleChecked={toggleChecked}
+              clearShoppingList={clearShoppingList}
             />
           </>
         )}
@@ -46,26 +49,35 @@ export const Home = () => {
             <Separator.Root className="my-2 h-[1px] w-100 bg-gray-300" />
             <h2 className="text-lg font-medium">This Week's Meals:</h2>
             <ul>
-              {Object.entries(weeklyMeals).map(
-                ([day, mealId]) =>
-                  mealId && (
-                    <li key={day}>
-                      {day}:{" "}
-                      <span className="font-medium">
-                        {getMealNameById(meals, mealId)}
-                      </span>
-                    </li>
-                  ),
-              )}
+              {Object.entries(weeklyMeals).map(([day, mealId]) => {
+                const meal = getMealById(meals, mealId);
+                return meal ? (
+                  <li key={day}>
+                    {day}:{" "}
+                    <Modal
+                      triggerText={meal.name}
+                      title={meal.name}
+                      description={
+                        <ul>
+                          {meal.ingredients.map((ingredient) => (
+                            <li>{ingredient.name}</li>
+                          ))}
+                        </ul>
+                      }
+                    />
+                  </li>
+                ) : null;
+              })}
             </ul>
-            <button
-              onClick={() => {
+            <ConfirmationDialog
+              triggerText="Clear Meals"
+              title="Clear Meals?"
+              description="Are you sure you want to clear this week's meals? This action cannot be undone."
+              onConfirm={() => {
                 clearWeeklyMeals();
                 clearShoppingList();
               }}
-              className="cursor-pointer text-red-700 hover:underline">
-              Clear Meals
-            </button>
+            />
           </>
         ) : (
           <p>No meals selected for this week.</p>

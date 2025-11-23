@@ -1,1 +1,1 @@
-export { getMealNameById } from "./helpers";
+export { getMealById as getMealNameById } from "./helpers";

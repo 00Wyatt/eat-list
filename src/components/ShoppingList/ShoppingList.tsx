@@ -1,16 +1,19 @@
 import type { ShoppingListItem } from "@/types";
 import { ShoppingListItemComponent } from "./components/ShoppingListItemComponent";
+import { ConfirmationDialog } from "../common/ConfirmationDialog";
 
 type ShoppingListProps = {
   shoppingList: ShoppingListItem[];
   onRemove: (itemName: string) => void;
   onToggleChecked: (itemName: string) => void;
+  clearShoppingList: () => void;
 };
 
 export const ShoppingList = ({
   shoppingList,
   onRemove,
   onToggleChecked,
+  clearShoppingList,
 }: ShoppingListProps) => {
   return (
     <div className="flex flex-col gap-4">
@@ -25,6 +28,13 @@ export const ShoppingList = ({
           />
         ))}
       </ul>
+      <ConfirmationDialog
+        triggerText="Clear List"
+        title="Clear Shopping List?"
+        description="Are you sure you want to clear the shopping list? This action cannot be undone."
+        onConfirm={clearShoppingList}
+        triggerStyles="self-start"
+      />
     </div>
   );
 };
