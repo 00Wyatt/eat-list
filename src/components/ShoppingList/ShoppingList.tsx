@@ -16,9 +16,11 @@ export const ShoppingList = ({
   clearShoppingList,
 }: ShoppingListProps) => {
   return (
-    <div className="flex flex-col gap-4">
-      <h2 className="text-lg font-medium">Shopping List</h2>
-      <ul className="flex flex-col gap-1">
+    <div className="flex w-full flex-col gap-4">
+      <h2 className="text-sm font-medium tracking-wider text-gray-800 uppercase">
+        Shopping List
+      </h2>
+      <ul className="flex flex-col gap-2">
         {shoppingList.map((shoppingListItem) => (
           <ShoppingListItemComponent
             key={shoppingListItem.name}

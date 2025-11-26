@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router";
 import { Separator } from "radix-ui";
-import { useAuth } from "@/contexts/AuthContext";
 import { getMealById } from "@/utils/helpers";
 import { ShoppingList } from "@/components/ShoppingList";
 import { Modal } from "@/components/Modal";
@@ -11,8 +10,6 @@ import { useMeals } from "@/hooks";
 import { ConfirmationDialog } from "@/components/common/ConfirmationDialog/ConfirmationDialog";
 
 export const Home = () => {
-  const { logout } = useAuth();
-
   const { meals, fetchMeals } = useMeals();
   const {
     shoppingList,
@@ -32,7 +29,7 @@ export const Home = () => {
   const showShoppingList = shoppingList && shoppingList.length > 0;
 
   return (
-    <div className="flex max-w-80 flex-col items-start gap-4 p-5">
+    <div className="flex flex-col items-start gap-4 p-5">
       {showShoppingList && (
         <>
           <ShoppingList
@@ -84,14 +81,6 @@ export const Home = () => {
       <Link to="/select-meals" className="text-blue-500 hover:underline">
         {weeklyMeals ? "Select New Meals" : "Select This Week's Meals"}
       </Link>
-      <Separator.Root className="my25 h-[1px] w-full bg-gray-300" />
-      <div className="flex gap-4">
-        <button
-          onClick={logout}
-          className="cursor-pointer border border-gray-500 px-2 py-1.5 text-red-700 hover:bg-gray-200">
-          Logout
-        </button>
-      </div>
     </div>
   );
 };
