@@ -4,6 +4,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Home } from "./pages/Home";
 import { SelectMeals } from "./pages/SelectMeals";
+import { Layout } from "./components/Layout";
 
 const appTitle = "Eat List";
 
@@ -21,23 +22,25 @@ export default function App() {
               />
             }
           />
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/select-meals"
-            element={
-              <ProtectedRoute>
-                <SelectMeals />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route element={<Layout />}>
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/select-meals"
+              element={
+                <ProtectedRoute>
+                  <SelectMeals />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </AuthProvider>
