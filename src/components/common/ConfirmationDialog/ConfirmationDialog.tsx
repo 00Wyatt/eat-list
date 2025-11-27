@@ -1,32 +1,26 @@
 import { Dialog } from "radix-ui";
 import { LuX } from "react-icons/lu";
+import { Button } from "../Button";
 
 type ConfirmationDialogProps = {
-  triggerText?: string;
+  trigger: React.ReactNode;
   title?: string;
   description?: string | React.ReactNode;
   onConfirm?: () => void;
-  triggerStyles?: string;
 };
 
 export const ConfirmationDialog = ({
-  triggerText,
+  trigger,
   title,
   description,
   onConfirm,
-  triggerStyles = "",
 }: ConfirmationDialogProps) => {
   return (
     <Dialog.Root>
-      <Dialog.Trigger asChild>
-        <button
-          className={`cursor-pointer text-red-700 hover:underline ${triggerStyles}`}>
-          {triggerText}
-        </button>
-      </Dialog.Trigger>
+      <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black opacity-40" />
-        <Dialog.Content className="fixed top-1/2 left-1/2 w-full max-w-sm translate-[-50%] bg-white p-8">
+        <Dialog.Content className="fixed top-1/2 left-1/2 w-full max-w-sm translate-[-50%] rounded bg-white p-6">
           <Dialog.Title className="mb-2 text-lg font-medium">
             {title}
           </Dialog.Title>
@@ -35,21 +29,19 @@ export const ConfirmationDialog = ({
           </Dialog.Description>
           <div className="mt-6 flex justify-end gap-4">
             <Dialog.Close asChild>
-              <button className="cursor-pointer hover:text-gray-700 hover:underline">
+              <Button color="neutral" size="large" variant="ghost">
                 Cancel
-              </button>
+              </Button>
             </Dialog.Close>
             <Dialog.Close asChild>
-              <button
-                className="cursor-pointer font-medium hover:text-gray-700 hover:underline"
-                onClick={onConfirm}>
+              <Button color="danger" size="large" onClick={onConfirm}>
                 Confirm
-              </button>
+              </Button>
             </Dialog.Close>
           </div>
           <Dialog.Close
             asChild
-            className="absolute top-3 right-3 cursor-pointer text-lg hover:text-gray-700">
+            className="absolute top-4 right-4 cursor-pointer text-lg">
             <button aria-label="Close">
               <LuX />
             </button>

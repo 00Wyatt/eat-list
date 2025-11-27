@@ -1,6 +1,8 @@
+import { LuPlus, LuTrash2 } from "react-icons/lu";
 import type { ShoppingListItem } from "@/types";
 import { ShoppingListItemComponent } from "./components/ShoppingListItemComponent";
 import { ConfirmationDialog } from "../common/ConfirmationDialog";
+import { Button } from "../common/Button";
 
 type ShoppingListProps = {
   shoppingList: ShoppingListItem[];
@@ -16,9 +18,11 @@ export const ShoppingList = ({
   clearShoppingList,
 }: ShoppingListProps) => {
   return (
-    <div className="flex flex-col gap-4">
-      <h2 className="text-lg font-medium">Shopping List</h2>
-      <ul className="flex flex-col gap-1">
+    <div className="flex w-full flex-col gap-4">
+      <h2 className="text-sm font-medium tracking-wider text-gray-800 uppercase">
+        Shopping List
+      </h2>
+      <ul className="flex flex-col gap-2">
         {shoppingList.map((shoppingListItem) => (
           <ShoppingListItemComponent
             key={shoppingListItem.name}
@@ -28,13 +32,21 @@ export const ShoppingList = ({
           />
         ))}
       </ul>
-      <ConfirmationDialog
-        triggerText="Clear List"
-        title="Clear Shopping List?"
-        description="Are you sure you want to clear the shopping list? This action cannot be undone."
-        onConfirm={clearShoppingList}
-        triggerStyles="self-start"
-      />
+      <div className="mt-1 flex justify-between">
+        <Button variant="disabled">
+          <LuPlus /> Add Item
+        </Button>
+        <ConfirmationDialog
+          trigger={
+            <Button color="danger">
+              <LuTrash2 /> Clear List
+            </Button>
+          }
+          title="Clear Shopping List?"
+          description="Are you sure you want to clear the shopping list? This action cannot be undone."
+          onConfirm={clearShoppingList}
+        />
+      </div>
     </div>
   );
 };
