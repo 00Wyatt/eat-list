@@ -15,10 +15,10 @@ export const SettingsMenu = () => {
         </button>
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Content className="mr-3 flex flex-col gap-2 rounded-lg border-2 border-sky-200 bg-white p-3 shadow-md">
+        <Popover.Content className="mr-3 flex flex-col gap-2 rounded-lg border border-sky-200 bg-white p-3 shadow-md">
           <p>{user?.email}</p>
           <button
-            className="w-full cursor-pointer rounded bg-red-100 px-2 py-1 text-red-700 transition hover:bg-red-600 hover:text-white"
+            className="w-full cursor-pointer rounded bg-red-100 px-2 py-1 text-red-700 hover:bg-red-600 hover:text-white"
             onClick={logout}>
             Logout
           </button>
