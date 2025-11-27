@@ -22,7 +22,7 @@ export const ShoppingListItemComponent = ({
       timerRef.current = setTimeout(() => {
         onToggleChecked();
         timerRef.current = null;
-      }, 500);
+      }, 400);
     }
   };
 
@@ -53,7 +53,7 @@ export const ShoppingListItemComponent = ({
       onTouchEnd={handlePressEnd}
       onClick={handleClick}
       className={twMerge(
-        "flex items-center gap-3 rounded-lg bg-sky-50 px-4 py-2 duration-100",
+        "flex items-center gap-3 rounded bg-sky-50 px-4 py-2 duration-100",
         checkedListItemStyles,
       )}>
       <Checkbox.Root
@@ -78,7 +78,7 @@ export const ShoppingListItemComponent = ({
       {onRemove && (
         <button
           type="button"
-          className="ml-auto cursor-pointer p-1 text-xl text-sky-900 hover:text-red-900"
+          className="ml-auto p-1 text-xl text-sky-900"
           onClick={onRemove}>
           <LuX />
         </button>
