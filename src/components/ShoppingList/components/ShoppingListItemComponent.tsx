@@ -6,7 +6,7 @@ import type { ShoppingListItem } from "@/types";
 
 type ShoppingListItemProps = {
   shoppingListItem: ShoppingListItem;
-  onRemove: () => void;
+  onRemove: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onToggleChecked: () => void;
 };
 
@@ -22,7 +22,7 @@ export const ShoppingListItemComponent = ({
       timerRef.current = setTimeout(() => {
         onToggleChecked();
         timerRef.current = null;
-      }, 400);
+      }, 300);
     }
   };
 
@@ -53,7 +53,7 @@ export const ShoppingListItemComponent = ({
       onTouchEnd={handlePressEnd}
       onClick={handleClick}
       className={twMerge(
-        "flex items-center gap-3 rounded bg-sky-50 px-4 py-2 duration-100",
+        "flex items-center gap-3 rounded bg-sky-50 px-4 py-3 duration-100",
         checkedListItemStyles,
       )}>
       <Checkbox.Root
@@ -67,7 +67,7 @@ export const ShoppingListItemComponent = ({
           <LuCheck />
         </Checkbox.Indicator>
       </Checkbox.Root>
-      <label htmlFor={shoppingListItem.name}>
+      <label htmlFor={shoppingListItem.name} className="select-none">
         <span className="font-medium text-gray-900">
           {shoppingListItem.quantityRounded} x {shoppingListItem.name}
         </span>{" "}
@@ -78,7 +78,7 @@ export const ShoppingListItemComponent = ({
       {onRemove && (
         <button
           type="button"
-          className="ml-auto p-1 text-xl text-sky-900"
+          className="ml-auto text-2xl text-sky-900"
           onClick={onRemove}>
           <LuX />
         </button>

@@ -27,7 +27,10 @@ export const ShoppingList = ({
           <ShoppingListItemComponent
             key={shoppingListItem.name}
             shoppingListItem={shoppingListItem}
-            onRemove={() => onRemove(shoppingListItem.name)}
+            onRemove={(e: React.MouseEvent<HTMLButtonElement>) => {
+              e.stopPropagation();
+              onRemove(shoppingListItem.name);
+            }}
             onToggleChecked={() => onToggleChecked(shoppingListItem.name)}
           />
         ))}

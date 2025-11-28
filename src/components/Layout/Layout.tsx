@@ -6,7 +6,7 @@ export const Layout = () => {
   return (
     <>
       <Header />
-      <main className="h-full flex-1">
+      <main className="flex flex-1 flex-col">
         <Outlet />
       </main>
       <Footer />

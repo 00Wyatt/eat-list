@@ -24,12 +24,14 @@ export const WeeklyMealsSection = ({
       <h2 className="text-sm font-medium tracking-wider text-gray-800 uppercase">
         Weekly Meals:
       </h2>
-      <ul>
+      <ul className="flex flex-col gap-1">
         {Object.entries(weeklyMeals).map(([day, mealId]) => {
           const meal = getMealById(meals, mealId);
           return meal ? (
-            <li key={day} className="mb-1">
-              {day}:{" "}
+            <li key={day} className="mb-1 flex items-center gap-2">
+              <span className="min-w-26 rounded bg-orange-100 px-2 py-1 text-center">
+                {day}:
+              </span>{" "}
               <Modal
                 triggerText={meal.name}
                 title={meal.name}

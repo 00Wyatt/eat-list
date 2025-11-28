@@ -16,10 +16,7 @@ export const SettingsMenu = () => {
       <Popover.Portal>
         <Popover.Content className="mr-3 flex flex-col gap-2 rounded-lg border border-sky-200 bg-white p-3 shadow-md">
           <p>{user?.email}</p>
-          <Button
-            color="danger"
-            className="w-full justify-center"
-            onClick={logout}>
+          <Button color="danger" className="w-full" onClick={logout}>
             Logout
           </Button>
           <Popover.Arrow className="fill-sky-200" />
