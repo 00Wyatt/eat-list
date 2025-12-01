@@ -1,11 +1,11 @@
 import type { UseFormRegisterReturn } from "react-hook-form";
-import type { DocumentData } from "firebase/firestore";
+import type { Meal } from "@/types";
 
 type FormSelectProps = {
   id: string;
   label?: string;
   placeholder?: string;
-  mealList: DocumentData[];
+  mealList: Meal[];
   register: UseFormRegisterReturn;
 };
 
@@ -19,13 +19,16 @@ export const FormSelect = ({
   return (
     <div className="flex flex-col gap-1">
       {label && (
-        <label htmlFor={id} className="font-medium">
+        <label htmlFor={id} className="text-sm font-medium text-gray-800">
           {label}
         </label>
       )}
-      <select id={id} {...(register ?? {})} className="border p-1">
+      <select
+        id={id}
+        {...(register ?? {})}
+        className="rounded border border-gray-300 p-2">
         {placeholder && (
-          <option value="" className="text-gray-600">
+          <option value="" className="text-gray-700">
             {placeholder}
           </option>
         )}

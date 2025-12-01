@@ -74,7 +74,7 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
       {errors.root && (
         <span className="text-sm text-red-500">{errors.root.message}</span>
       )}
-      <Button type="submit" color="emphasized" className="mt-1">
+      <Button type="submit" color="emphasized" size="large" className="mt-1">
         Login
       </Button>
     </form>

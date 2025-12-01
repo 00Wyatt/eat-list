@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { Link } from "react-router";
+import { LuCalendarPlus } from "react-icons/lu";
 import { ShoppingList } from "@/components/ShoppingList";
 import { useShoppingList } from "@/hooks";
 import { useWeeklyMeals } from "@/hooks";
 import { useMeals } from "@/hooks";
 import { WeeklyMealsSection } from "@/components/WeeklyMealsSection";
+import { Button } from "@/components/common/Button";
 
 export const Home = () => {
   const { meals, fetchMeals } = useMeals();
@@ -52,8 +54,10 @@ export const Home = () => {
         <p>No meals selected for this week.</p>
       )}
       {!weeklyMeals && (
-        <Link to="/select-meals" className="text-blue-500 hover:underline">
-          Select This Week's Meals
+        <Link to="/select-meals">
+          <Button>
+            <LuCalendarPlus /> Select Meals
+          </Button>
         </Link>
       )}
     </div>

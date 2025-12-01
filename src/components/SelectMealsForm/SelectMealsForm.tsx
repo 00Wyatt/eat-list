@@ -1,13 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type DocumentData } from "firebase/firestore";
 import { FormSelect } from "./components/FormSelect";
-import type { Meal } from "@/types";
-import { useShoppingList } from "@/hooks";
-import { useWeeklyMeals } from "@/hooks";
+import { useMeals, useShoppingList, useWeeklyMeals } from "@/hooks";
+import { Button } from "../common/Button";
+import { LuSparkles } from "react-icons/lu";
 
 const schema = z.object({
   Monday: z.string(),
@@ -21,32 +20,59 @@ const schema = z.object({
 
 export type SelectMealsFormData = z.infer<typeof schema>;
 
-type SelectMealsFormProps = {
-  mealList: DocumentData[];
-};
-
-export const SelectMealsForm = ({ mealList }: SelectMealsFormProps) => {
-  const { register, handleSubmit } = useForm<SelectMealsFormData>({
+export const SelectMealsForm = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    clearErrors,
+    setError,
+  } = useForm<SelectMealsFormData>({
     resolver: zodResolver(schema),
   });
   const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  const { meals, fetchMeals } = useMeals();
   const { createWeeklyMeals } = useWeeklyMeals();
   const { createShoppingList } = useShoppingList();
 
+  useEffect(() => {
+    fetchMeals();
+  }, []);
+
   const onSubmit = async (data: SelectMealsFormData) => {
+    clearErrors("root");
+
+    const hasMealSelected = Object.values(data).some(
+      (value) => typeof value === "string" && value.length > 0,
+    );
+
+    if (!hasMealSelected) {
+      setError("root", {
+        type: "manual",
+        message: "Select at least one meal",
+      });
+      return;
+    }
+
     try {
       const weeklyMealsList = await createWeeklyMeals(data);
 
       setSuccessMessage("Meals selected successfully!");
 
-      await createShoppingList(weeklyMealsList, mealList as Meal[]);
+      await createShoppingList(weeklyMealsList, meals);
       setTimeout(() => {
         navigate("/");
       }, 2000);
     } catch (error) {
-      console.error(error);
+      setError("root", {
+        type: "manual",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to create weekly meals",
+      });
     }
   };
 
@@ -58,61 +84,62 @@ export const SelectMealsForm = ({ mealList }: SelectMealsFormProps) => {
         id="monday"
         label="Monday"
         placeholder="Select a meal for Monday"
-        mealList={mealList}
+        mealList={meals ?? []}
         register={register("Monday")}
       />
       <FormSelect
         id="tuesday"
         label="Tuesday"
         placeholder="Select a meal for Tuesday"
-        mealList={mealList}
+        mealList={meals ?? []}
         register={register("Tuesday")}
       />
       <FormSelect
         id="wednesday"
         label="Wednesday"
         placeholder="Select a meal for Wednesday"
-        mealList={mealList}
+        mealList={meals ?? []}
         register={register("Wednesday")}
       />
       <FormSelect
         id="thursday"
         label="Thursday"
         placeholder="Select a meal for Thursday"
-        mealList={mealList}
+        mealList={meals ?? []}
         register={register("Thursday")}
       />
       <FormSelect
         id="friday"
         label="Friday"
         placeholder="Select a meal for Friday"
-        mealList={mealList}
+        mealList={meals ?? []}
         register={register("Friday")}
       />
       <FormSelect
         id="saturday"
         label="Saturday"
         placeholder="Select a meal for Saturday"
-        mealList={mealList}
+        mealList={meals ?? []}
         register={register("Saturday")}
       />
       <FormSelect
         id="sunday"
         label="Sunday"
         placeholder="Select a meal for Sunday"
-        mealList={mealList}
+        mealList={meals ?? []}
         register={register("Sunday")}
       />
-      <button
-        type="submit"
-        className="cursor-pointer self-start border border-gray-500 p-2 hover:bg-gray-200">
-        Create List
-      </button>
-
+      <Button type="submit" size="large" className="mt-2">
+        <LuSparkles /> Create List
+      </Button>
+      {errors.root && (
+        <p className="text-red-600">
+          {errors.root?.message && errors.root.message}
+        </p>
+      )}
       {successMessage && (
         <>
           <p className="text-green-600">{successMessage}</p>
-          <p>Redirecting...</p>
         </>
       )}
     </form>
