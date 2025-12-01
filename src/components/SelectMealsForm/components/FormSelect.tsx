@@ -7,6 +7,7 @@ type FormSelectProps = {
   placeholder?: string;
   mealList: Meal[];
   register: UseFormRegisterReturn;
+  extraOptions?: { value: string; label: string }[];
 };
 
 export const FormSelect = ({
@@ -15,6 +16,7 @@ export const FormSelect = ({
   placeholder,
   mealList,
   register,
+  extraOptions,
 }: FormSelectProps) => {
   return (
     <div className="flex flex-col gap-1">
@@ -35,6 +37,11 @@ export const FormSelect = ({
         {mealList.map((meal) => (
           <option key={meal.id} value={meal.id}>
             {meal.name}
+          </option>
+        ))}
+        {extraOptions?.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
           </option>
         ))}
       </select>

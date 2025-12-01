@@ -19,10 +19,12 @@ export function useShoppingList() {
   const createShoppingList = useCallback(
     async (weeklyMealList: WeeklyMeals | null, mealsList: Meal[] | null) => {
       if (!weeklyMealList || !mealsList) return [];
-      const mealIds = Object.values(weeklyMealList).filter(Boolean);
+      const mealObjs = Object.values(weeklyMealList).filter(
+        (mealObj) => mealObj.id,
+      );
 
-      const allIngredients: Ingredient[] = mealIds.flatMap((mealId: string) => {
-        const meal = mealsList.find((m) => m.id === mealId);
+      const allIngredients: Ingredient[] = mealObjs.flatMap((mealObj) => {
+        const meal = mealsList.find((m) => m.id === mealObj.id);
         return meal && meal.ingredients ? meal.ingredients : [];
       });
 

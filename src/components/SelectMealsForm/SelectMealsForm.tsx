@@ -20,6 +20,16 @@ const schema = z.object({
 
 export type SelectMealsFormData = z.infer<typeof schema>;
 
+const daysOfWeek = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+
 export const SelectMealsForm = () => {
   const {
     register,
@@ -27,37 +37,57 @@ export const SelectMealsForm = () => {
     formState: { errors },
     clearErrors,
     setError,
+    watch,
   } = useForm<SelectMealsFormData>({
     resolver: zodResolver(schema),
   });
+
   const navigate = useNavigate();
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const { meals, fetchMeals } = useMeals();
   const { createWeeklyMeals } = useWeeklyMeals();
   const { createShoppingList } = useShoppingList();
 
+  const [customMeals, setCustomMeals] = useState<Record<string, string>>({});
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   useEffect(() => {
     fetchMeals();
   }, []);
 
+  const handleCustomMealChange = (day: string, value: string) => {
+    setCustomMeals((prev) => ({ ...prev, [day]: value }));
+  };
+
   const onSubmit = async (data: SelectMealsFormData) => {
     clearErrors("root");
 
-    const hasMealSelected = Object.values(data).some(
-      (value) => typeof value === "string" && value.length > 0,
+    const weeklyMeals = Object.fromEntries(
+      daysOfWeek.map((day) => {
+        const selected = data[day as keyof SelectMealsFormData];
+        if (selected === "__other__") {
+          const name = customMeals[day]?.trim();
+          return [day, name ? { name } : { name: "" }];
+        }
+        const meal = meals?.find((m) => m.id === selected);
+        return [day, meal ? { id: meal.id, name: meal.name } : { name: "" }];
+      }),
+    );
+
+    const hasMealSelected = Object.values(weeklyMeals).some(
+      (v) => v.name && v.name.length > 0,
     );
 
     if (!hasMealSelected) {
       setError("root", {
         type: "manual",
-        message: "Select at least one meal",
+        message: "Please select at least one meal",
       });
       return;
     }
 
     try {
-      const weeklyMealsList = await createWeeklyMeals(data);
+      const weeklyMealsList = await createWeeklyMeals(weeklyMeals);
 
       setSuccessMessage("Meals selected successfully!");
 
@@ -80,55 +110,27 @@ export const SelectMealsForm = () => {
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex w-full flex-col gap-3">
-      <FormSelect
-        id="monday"
-        label="Monday"
-        placeholder="Select a meal for Monday"
-        mealList={meals ?? []}
-        register={register("Monday")}
-      />
-      <FormSelect
-        id="tuesday"
-        label="Tuesday"
-        placeholder="Select a meal for Tuesday"
-        mealList={meals ?? []}
-        register={register("Tuesday")}
-      />
-      <FormSelect
-        id="wednesday"
-        label="Wednesday"
-        placeholder="Select a meal for Wednesday"
-        mealList={meals ?? []}
-        register={register("Wednesday")}
-      />
-      <FormSelect
-        id="thursday"
-        label="Thursday"
-        placeholder="Select a meal for Thursday"
-        mealList={meals ?? []}
-        register={register("Thursday")}
-      />
-      <FormSelect
-        id="friday"
-        label="Friday"
-        placeholder="Select a meal for Friday"
-        mealList={meals ?? []}
-        register={register("Friday")}
-      />
-      <FormSelect
-        id="saturday"
-        label="Saturday"
-        placeholder="Select a meal for Saturday"
-        mealList={meals ?? []}
-        register={register("Saturday")}
-      />
-      <FormSelect
-        id="sunday"
-        label="Sunday"
-        placeholder="Select a meal for Sunday"
-        mealList={meals ?? []}
-        register={register("Sunday")}
-      />
+      {daysOfWeek.map((day) => (
+        <div key={day}>
+          <FormSelect
+            id={day.toLowerCase()}
+            label={day}
+            placeholder={`Select a meal for ${day}`}
+            mealList={meals ?? []}
+            register={register(day as keyof SelectMealsFormData)}
+            extraOptions={[{ value: "__other__", label: "Other" }]}
+          />
+          {watch(day as keyof SelectMealsFormData) === "__other__" && (
+            <input
+              type="text"
+              placeholder="Enter meal name"
+              value={customMeals[day] || ""}
+              onChange={(e) => handleCustomMealChange(day, e.target.value)}
+              className="mt-1 w-full rounded border border-gray-300 p-2"
+            />
+          )}
+        </div>
+      ))}
       <Button type="submit" size="large" className="mt-2">
         <LuSparkles /> Create List
       </Button>
