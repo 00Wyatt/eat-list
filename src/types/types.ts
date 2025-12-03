@@ -10,7 +10,7 @@ export type Meal = {
   ingredients: Ingredient[];
 };
 
-export type WeeklyMeals = Record<string, string>;
+export type WeeklyMeals = Record<string, { id?: string; name: string }>;
 
 export type ShoppingListItem = {
   checked: boolean;

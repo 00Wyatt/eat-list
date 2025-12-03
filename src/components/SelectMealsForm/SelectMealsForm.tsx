@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type DocumentData } from "firebase/firestore";
+import { Checkbox } from "radix-ui";
+import { LuCheck, LuSparkles } from "react-icons/lu";
 import { FormSelect } from "./components/FormSelect";
-import type { Meal } from "@/types";
-import { useShoppingList } from "@/hooks";
-import { useWeeklyMeals } from "@/hooks";
+import { useMeals, useShoppingList, useWeeklyMeals } from "@/hooks";
+import { Button } from "../common/Button";
 
 const schema = z.object({
   Monday: z.string(),
@@ -17,36 +17,102 @@ const schema = z.object({
   Friday: z.string(),
   Saturday: z.string(),
   Sunday: z.string(),
+  keepCurrentList: z.boolean(),
 });
 
 export type SelectMealsFormData = z.infer<typeof schema>;
 
-type SelectMealsFormProps = {
-  mealList: DocumentData[];
-};
+const daysOfWeek = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
 
-export const SelectMealsForm = ({ mealList }: SelectMealsFormProps) => {
-  const { register, handleSubmit } = useForm<SelectMealsFormData>({
+export const SelectMealsForm = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    clearErrors,
+    setError,
+    watch,
+    control,
+  } = useForm<SelectMealsFormData>({
     resolver: zodResolver(schema),
   });
+
   const navigate = useNavigate();
+
+  const { meals, fetchMeals } = useMeals();
+  const { createWeeklyMeals } = useWeeklyMeals();
+  const { shoppingList, fetchShoppingList, createShoppingList } =
+    useShoppingList();
+
+  const [customMeals, setCustomMeals] = useState<Record<string, string>>({});
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const { createWeeklyMeals } = useWeeklyMeals();
-  const { createShoppingList } = useShoppingList();
+  useEffect(() => {
+    fetchMeals();
+    fetchShoppingList();
+  }, []);
+
+  const handleCustomMealChange = (day: string, value: string) => {
+    setCustomMeals((prev) => ({ ...prev, [day]: value }));
+  };
 
   const onSubmit = async (data: SelectMealsFormData) => {
+    clearErrors("root");
+
+    const weeklyMeals = Object.fromEntries(
+      daysOfWeek.map((day) => {
+        const selected = data[day as keyof SelectMealsFormData];
+        if (selected === "__other__") {
+          const name = customMeals[day]?.trim();
+          return [day, name ? { name } : { name: "" }];
+        }
+        const meal = meals?.find((m) => m.id === selected);
+        return [day, meal ? { id: meal.id, name: meal.name } : { name: "" }];
+      }),
+    );
+
+    const hasMealSelected = Object.values(weeklyMeals).some(
+      (v) => v.name && v.name.length > 0,
+    );
+
+    if (!hasMealSelected) {
+      setError("root", {
+        type: "manual",
+        message: "Please select at least one meal",
+      });
+      return;
+    }
+
     try {
-      const weeklyMealsList = await createWeeklyMeals(data);
+      const weeklyMealsList = await createWeeklyMeals(weeklyMeals);
 
       setSuccessMessage("Meals selected successfully!");
 
-      await createShoppingList(weeklyMealsList, mealList as Meal[]);
+      await createShoppingList(
+        weeklyMealsList,
+        meals,
+        shoppingList,
+        data.keepCurrentList,
+      );
       setTimeout(() => {
         navigate("/");
       }, 2000);
     } catch (error) {
-      console.error(error);
+      setError("root", {
+        type: "manual",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to create weekly meals",
+      });
     }
   };
 
@@ -54,65 +120,57 @@ export const SelectMealsForm = ({ mealList }: SelectMealsFormProps) => {
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex w-full flex-col gap-3">
-      <FormSelect
-        id="monday"
-        label="Monday"
-        placeholder="Select a meal for Monday"
-        mealList={mealList}
-        register={register("Monday")}
-      />
-      <FormSelect
-        id="tuesday"
-        label="Tuesday"
-        placeholder="Select a meal for Tuesday"
-        mealList={mealList}
-        register={register("Tuesday")}
-      />
-      <FormSelect
-        id="wednesday"
-        label="Wednesday"
-        placeholder="Select a meal for Wednesday"
-        mealList={mealList}
-        register={register("Wednesday")}
-      />
-      <FormSelect
-        id="thursday"
-        label="Thursday"
-        placeholder="Select a meal for Thursday"
-        mealList={mealList}
-        register={register("Thursday")}
-      />
-      <FormSelect
-        id="friday"
-        label="Friday"
-        placeholder="Select a meal for Friday"
-        mealList={mealList}
-        register={register("Friday")}
-      />
-      <FormSelect
-        id="saturday"
-        label="Saturday"
-        placeholder="Select a meal for Saturday"
-        mealList={mealList}
-        register={register("Saturday")}
-      />
-      <FormSelect
-        id="sunday"
-        label="Sunday"
-        placeholder="Select a meal for Sunday"
-        mealList={mealList}
-        register={register("Sunday")}
-      />
-      <button
-        type="submit"
-        className="cursor-pointer self-start border border-gray-500 p-2 hover:bg-gray-200">
-        Create List
-      </button>
-
+      {daysOfWeek.map((day) => (
+        <div key={day}>
+          <FormSelect
+            id={day.toLowerCase()}
+            label={day}
+            placeholder={`Select a meal for ${day}`}
+            mealList={meals ?? []}
+            register={register(day as keyof SelectMealsFormData)}
+            extraOptions={[{ value: "__other__", label: "Other" }]}
+          />
+          {watch(day as keyof SelectMealsFormData) === "__other__" && (
+            <input
+              autoFocus
+              type="text"
+              placeholder="Enter meal name"
+              value={customMeals[day] || ""}
+              onChange={(e) => handleCustomMealChange(day, e.target.value)}
+              className="mt-1 w-full rounded border border-gray-300 p-2"
+            />
+          )}
+        </div>
+      ))}
+      <label className="mt-1 flex items-center gap-2 self-start">
+        <Controller
+          name="keepCurrentList"
+          control={control}
+          defaultValue={true}
+          render={({ field }) => (
+            <Checkbox.Root
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              className={`flex h-5 min-w-5 items-center justify-center rounded border-2 border-sky-200 ${field.value ? "bg-sky-200" : ""}`}>
+              <Checkbox.Indicator className="text-black">
+                <LuCheck />
+              </Checkbox.Indicator>
+            </Checkbox.Root>
+          )}
+        />
+        Keep existing shopping list items?
+      </label>
+      <Button type="submit" size="large" className="mt-1">
+        <LuSparkles /> Create List
+      </Button>
+      {errors.root && (
+        <p className="mb-2 text-red-600">
+          {errors.root?.message && errors.root.message}
+        </p>
+      )}
       {successMessage && (
         <>
-          <p className="text-green-600">{successMessage}</p>
-          <p>Redirecting...</p>
+          <p className="mb-2 text-green-600">{successMessage}</p>
         </>
       )}
     </form>

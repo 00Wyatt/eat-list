@@ -17,8 +17,10 @@ export const Authentication = ({
   };
 
   return (
-    <div className="mx-auto my-6 flex max-w-sm flex-col gap-4 rounded border p-6 shadow">
-      <h2 className="text-center text-xl font-semibold">{heading}</h2>
+    <div className="mx-auto my-6 flex w-full flex-col gap-4 p-6">
+      <h2 className="text-center text-xl font-medium text-gray-800 underline decoration-sky-600 underline-offset-5">
+        {heading}
+      </h2>
       <LoginForm onSuccess={handleSuccess} />
     </div>
   );

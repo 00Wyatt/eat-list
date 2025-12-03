@@ -17,12 +17,20 @@ export function useShoppingList() {
   }, []);
 
   const createShoppingList = useCallback(
-    async (weeklyMealList: WeeklyMeals | null, mealsList: Meal[] | null) => {
+    async (
+      weeklyMealList: WeeklyMeals | null,
+      mealsList: Meal[] | null,
+      shoppingList: ShoppingListItem[] | null,
+      keepCurrentList: boolean,
+    ) => {
       if (!weeklyMealList || !mealsList) return [];
-      const mealIds = Object.values(weeklyMealList).filter(Boolean);
 
-      const allIngredients: Ingredient[] = mealIds.flatMap((mealId: string) => {
-        const meal = mealsList.find((m) => m.id === mealId);
+      const mealObjs = Object.values(weeklyMealList).filter(
+        (mealObj) => mealObj.id,
+      );
+
+      const allIngredients: Ingredient[] = mealObjs.flatMap((mealObj) => {
+        const meal = mealsList.find((m) => m.id === mealObj.id);
         return meal && meal.ingredients ? meal.ingredients : [];
       });
 
@@ -36,18 +44,35 @@ export function useShoppingList() {
         }
       });
 
-      const shoppingList = Object.values(grouped).map((ingredient) => ({
+      const newItems = Object.values(grouped).map((ingredient) => ({
         ...ingredient,
         quantity: Math.round(ingredient.quantity * 100) / 100,
         quantityRounded: Math.max(1, Math.round(ingredient.quantity)),
         checked: false,
       }));
 
+      let finalList: ShoppingListItem[] = newItems;
+
+      if (keepCurrentList && Array.isArray(shoppingList)) {
+        const combinedList = [...newItems, ...shoppingList];
+        const grouped: { [name: string]: ShoppingListItem } = {};
+
+        combinedList.forEach((item) => {
+          if (grouped[item.name]) {
+            grouped[item.name].quantity += item.quantity;
+            grouped[item.name].quantityRounded += item.quantityRounded;
+          } else {
+            grouped[item.name] = { ...item };
+          }
+        });
+        finalList = Object.values(grouped);
+      }
+
       await setDoc(doc(db, "shoppingList", "current"), {
-        items: shoppingList,
+        items: finalList,
       });
-      setShoppingList(shoppingList);
-      return shoppingList;
+      setShoppingList(finalList);
+      return finalList;
     },
     [],
   );
@@ -65,6 +90,16 @@ export function useShoppingList() {
     async (name: string) => {
       if (!shoppingList) return;
       const updatedList = shoppingList.filter((item) => item.name !== name);
+      await setDoc(doc(db, "shoppingList", "current"), { items: updatedList });
+      setShoppingList(updatedList);
+    },
+    [shoppingList],
+  );
+
+  const addShoppingListItem = useCallback(
+    async (item: ShoppingListItem) => {
+      const currentList = shoppingList ?? [];
+      const updatedList = currentList.concat([item]);
       await setDoc(doc(db, "shoppingList", "current"), { items: updatedList });
       setShoppingList(updatedList);
     },
@@ -89,6 +124,7 @@ export function useShoppingList() {
     createShoppingList,
     clearShoppingList,
     removeShoppingListItem,
+    addShoppingListItem,
     toggleChecked,
   };
 }
