@@ -142,7 +142,7 @@ export const SelectMealsForm = () => {
           )}
         </div>
       ))}
-      <label className="mt-2 flex items-center gap-2 self-start">
+      <label className="mt-1 flex items-center gap-2 self-start">
         <Controller
           name="keepCurrentList"
           control={control}
@@ -160,17 +160,17 @@ export const SelectMealsForm = () => {
         />
         Keep existing shopping list items?
       </label>
-      <Button type="submit" size="large" className="mt-2">
+      <Button type="submit" size="large" className="mt-1">
         <LuSparkles /> Create List
       </Button>
       {errors.root && (
-        <p className="text-red-600">
+        <p className="mb-2 text-red-600">
           {errors.root?.message && errors.root.message}
         </p>
       )}
       {successMessage && (
         <>
-          <p className="text-green-600">{successMessage}</p>
+          <p className="mb-2 text-green-600">{successMessage}</p>
         </>
       )}
     </form>

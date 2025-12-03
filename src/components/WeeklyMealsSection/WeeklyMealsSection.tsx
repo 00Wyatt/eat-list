@@ -23,12 +23,12 @@ export const WeeklyMealsSection = ({
       <h2 className="text-sm font-medium tracking-wider text-gray-800 uppercase">
         Weekly Meals:
       </h2>
-      <ul className="flex flex-col gap-1">
+      <ul className="flex flex-col gap-2">
         {Object.entries(weeklyMeals).map(([day, mealObj]) => {
           if (!mealObj.name) return null;
           const meal = meals?.find((m) => m.id === mealObj.id);
           return (
-            <li key={day} className="mb-1 flex items-center gap-2">
+            <li key={day} className="flex items-center gap-2">
               <span className="min-w-26 rounded bg-orange-100 px-2 py-1 text-center">
                 {day}:
               </span>{" "}
@@ -54,7 +54,7 @@ export const WeeklyMealsSection = ({
           );
         })}
       </ul>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2">
         <Link to="/select-meals">
           <Button size="large" className="w-full">
             <LuCalendarPlus /> Select Meals
