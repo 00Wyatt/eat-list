@@ -56,7 +56,7 @@ export const WeeklyMealsSection = ({
       </ul>
       <div className="flex flex-col gap-2">
         <Link to="/select-meals">
-          <Button className="w-full">
+          <Button size="large" className="w-full">
             <LuCalendarPlus /> Select Meals
           </Button>
         </Link>

@@ -5,13 +5,13 @@ import { Button } from "@/components/common/Button/Button";
 
 export const SelectMeals = () => {
   return (
-    <div className="flex flex-col gap-4 p-5">
-      <h2 className="text-sm font-medium tracking-wider text-gray-800 uppercase">
+    <div className="flex w-full flex-col gap-2 p-5">
+      <h2 className="mb-2 text-sm font-medium tracking-wider text-gray-800 uppercase">
         Select Meals
       </h2>
       <SelectMealsForm />
-      <Link to="/" className="self-start">
-        <Button color="neutral">
+      <Link to="/">
+        <Button color="neutral" className="w-full">
           <LuArrowLeft /> Home
         </Button>
       </Link>

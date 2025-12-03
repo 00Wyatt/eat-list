@@ -58,7 +58,7 @@ export const ShoppingList = () => {
         />
       ) : (
         <div className="flex flex-col gap-2">
-          <Button onClick={() => setShowInput(true)}>
+          <Button size="large" onClick={() => setShowInput(true)}>
             <LuPlus /> Add Item
           </Button>
           <ConfirmationDialog

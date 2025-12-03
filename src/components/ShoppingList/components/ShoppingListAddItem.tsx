@@ -43,11 +43,11 @@ export const ShoppingListAddItem = ({
         }
       }}
       tabIndex={-1}
-      className="my-[-1px] flex flex-col gap-2">
+      className="flex flex-col gap-2">
       <input
         {...register("item")}
         autoFocus
-        className="flex-1 rounded border border-gray-300 px-2 py-1"
+        className="my-[1px] flex-1 rounded border border-gray-300 px-2 py-1.5"
         placeholder="Enter a value"
       />
       <Button type="submit" className="px-4">
