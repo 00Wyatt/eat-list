@@ -73,6 +73,16 @@ export function useShoppingList() {
     [shoppingList],
   );
 
+  const addShoppingListItem = useCallback(
+    async (item: ShoppingListItem) => {
+      const currentList = shoppingList ?? [];
+      const updatedList = currentList.concat([item]);
+      await setDoc(doc(db, "shoppingList", "current"), { items: updatedList });
+      setShoppingList(updatedList);
+    },
+    [shoppingList],
+  );
+
   const toggleChecked = useCallback(
     async (name: string) => {
       if (!shoppingList) return;
@@ -91,6 +101,7 @@ export function useShoppingList() {
     createShoppingList,
     clearShoppingList,
     removeShoppingListItem,
+    addShoppingListItem,
     toggleChecked,
   };
 }

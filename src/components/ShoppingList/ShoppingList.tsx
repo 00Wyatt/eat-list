@@ -1,22 +1,38 @@
+import { useEffect, useState } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import type { ShoppingListItem } from "@/types";
+import { useShoppingList } from "@/hooks/useShoppingList";
 import { ShoppingListItemComponent } from "./components/ShoppingListItemComponent";
 import { ConfirmationDialog } from "../common/ConfirmationDialog";
 import { Button } from "../common/Button";
+import { ShoppingListAddItem } from "./components/ShoppingListAddItem";
 
-type ShoppingListProps = {
-  shoppingList: ShoppingListItem[];
-  onRemove: (itemName: string) => void;
-  onToggleChecked: (itemName: string) => void;
-  clearShoppingList: () => void;
-};
+export const ShoppingList = () => {
+  const [showInput, setShowInput] = useState(false);
 
-export const ShoppingList = ({
-  shoppingList,
-  onRemove,
-  onToggleChecked,
-  clearShoppingList,
-}: ShoppingListProps) => {
+  const {
+    shoppingList,
+    fetchShoppingList,
+    clearShoppingList,
+    removeShoppingListItem,
+    addShoppingListItem,
+    toggleChecked,
+  } = useShoppingList();
+
+  useEffect(() => {
+    fetchShoppingList();
+  }, []);
+
+  const handleAddItem = (item: ShoppingListItem) => {
+    console.log("Input Value:", item);
+    addShoppingListItem(item);
+    setShowInput(false);
+  };
+
+  if (!shoppingList || shoppingList.length === 0) {
+    return null;
+  }
+
   return (
     <div className="flex w-full flex-col gap-4">
       <h2 className="text-sm font-medium tracking-wider text-gray-800 uppercase">
@@ -29,26 +45,35 @@ export const ShoppingList = ({
             shoppingListItem={shoppingListItem}
             onRemove={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.stopPropagation();
-              onRemove(shoppingListItem.name);
+              removeShoppingListItem(shoppingListItem.name);
             }}
-            onToggleChecked={() => onToggleChecked(shoppingListItem.name)}
+            onToggleChecked={() => toggleChecked(shoppingListItem.name)}
           />
         ))}
       </ul>
-      <div className="mt-1 flex justify-between">
-        <Button variant="disabled">
-          <LuPlus /> Add Item
-        </Button>
-        <ConfirmationDialog
-          trigger={
-            <Button color="danger">
-              <LuTrash2 /> Clear List
+      <div className="mt-1 flex items-center justify-between gap-2">
+        {showInput ? (
+          <ShoppingListAddItem
+            onAdd={handleAddItem}
+            onCancel={() => setShowInput(false)}
+          />
+        ) : (
+          <>
+            <Button onClick={() => setShowInput(true)}>
+              <LuPlus /> Add Item
             </Button>
-          }
-          title="Clear Shopping List?"
-          description="Are you sure you want to clear the shopping list? This action cannot be undone."
-          onConfirm={clearShoppingList}
-        />
+            <ConfirmationDialog
+              trigger={
+                <Button color="danger">
+                  <LuTrash2 /> Clear List
+                </Button>
+              }
+              title="Clear Shopping List?"
+              description="Are you sure you want to clear the shopping list? This action cannot be undone."
+              onConfirm={clearShoppingList}
+            />
+          </>
+        )}
       </div>
     </div>
   );

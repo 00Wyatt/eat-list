@@ -19,7 +19,7 @@ export const Modal = ({ triggerText, title, description }: ModalProps) => {
           <Dialog.Title className="mb-2 text-lg font-medium">
             {title}
           </Dialog.Title>
-          <Dialog.Description>{description}</Dialog.Description>
+          <Dialog.Description asChild>{description}</Dialog.Description>
           <Dialog.Close
             asChild
             className="absolute top-4 right-4 cursor-pointer text-lg hover:text-gray-700">
