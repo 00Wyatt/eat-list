@@ -54,15 +54,15 @@ export const WeeklyMealsSection = ({
           );
         })}
       </ul>
-      <div className="flex justify-between">
+      <div className="flex flex-col gap-2">
         <Link to="/select-meals">
-          <Button>
+          <Button className="w-full">
             <LuCalendarPlus /> Select Meals
           </Button>
         </Link>
         <ConfirmationDialog
           trigger={
-            <Button className="self-end bg-red-100 px-2 py-1 text-rose-600">
+            <Button className="bg-red-100 text-rose-600">
               <LuTrash2 /> Clear Meals
             </Button>
           }

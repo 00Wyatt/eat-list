@@ -67,13 +67,17 @@ export const ShoppingListItemComponent = ({
           <LuCheck />
         </Checkbox.Indicator>
       </Checkbox.Root>
-      <label htmlFor={shoppingListItem.name} className="select-none">
+      <label
+        htmlFor={shoppingListItem.name}
+        className="flex items-center gap-1 select-none">
         <span className="font-medium text-gray-900">
           {shoppingListItem.quantityRounded} x {shoppingListItem.name}
-        </span>{" "}
-        <span className="text-sm text-gray-600">
-          ({shoppingListItem.quantity} x {shoppingListItem.unit})
         </span>
+        {shoppingListItem.quantity > 0 && (
+          <span className="text-sm text-gray-600">
+            ({shoppingListItem.quantity} x {shoppingListItem.unit})
+          </span>
+        )}
       </label>
       {onRemove && (
         <button

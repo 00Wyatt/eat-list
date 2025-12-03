@@ -51,30 +51,28 @@ export const ShoppingList = () => {
           />
         ))}
       </ul>
-      <div className="mt-1 flex items-center justify-between gap-2">
-        {showInput ? (
-          <ShoppingListAddItem
-            onAdd={handleAddItem}
-            onCancel={() => setShowInput(false)}
+      {showInput ? (
+        <ShoppingListAddItem
+          onAdd={handleAddItem}
+          onCancel={() => setShowInput(false)}
+        />
+      ) : (
+        <div className="flex flex-col gap-2">
+          <Button onClick={() => setShowInput(true)}>
+            <LuPlus /> Add Item
+          </Button>
+          <ConfirmationDialog
+            trigger={
+              <Button color="danger">
+                <LuTrash2 /> Clear List
+              </Button>
+            }
+            title="Clear Shopping List?"
+            description="Are you sure you want to clear the shopping list? This action cannot be undone."
+            onConfirm={clearShoppingList}
           />
-        ) : (
-          <>
-            <Button onClick={() => setShowInput(true)}>
-              <LuPlus /> Add Item
-            </Button>
-            <ConfirmationDialog
-              trigger={
-                <Button color="danger">
-                  <LuTrash2 /> Clear List
-                </Button>
-              }
-              title="Clear Shopping List?"
-              description="Are you sure you want to clear the shopping list? This action cannot be undone."
-              onConfirm={clearShoppingList}
-            />
-          </>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
