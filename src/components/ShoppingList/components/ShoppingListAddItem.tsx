@@ -43,7 +43,7 @@ export const ShoppingListAddItem = ({
         }
       }}
       tabIndex={-1}
-      className="flex flex-col gap-2">
+      className="flex flex-col gap-3">
       <input
         {...register("item")}
         autoFocus

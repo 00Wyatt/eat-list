@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Checkbox } from "radix-ui";
+import { LuCheck, LuSparkles } from "react-icons/lu";
 import { FormSelect } from "./components/FormSelect";
 import { useMeals, useShoppingList, useWeeklyMeals } from "@/hooks";
 import { Button } from "../common/Button";
-import { LuSparkles } from "react-icons/lu";
 
 const schema = z.object({
   Monday: z.string(),
@@ -16,6 +17,7 @@ const schema = z.object({
   Friday: z.string(),
   Saturday: z.string(),
   Sunday: z.string(),
+  keepCurrentList: z.boolean(),
 });
 
 export type SelectMealsFormData = z.infer<typeof schema>;
@@ -38,6 +40,7 @@ export const SelectMealsForm = () => {
     clearErrors,
     setError,
     watch,
+    control,
   } = useForm<SelectMealsFormData>({
     resolver: zodResolver(schema),
   });
@@ -46,13 +49,15 @@ export const SelectMealsForm = () => {
 
   const { meals, fetchMeals } = useMeals();
   const { createWeeklyMeals } = useWeeklyMeals();
-  const { createShoppingList } = useShoppingList();
+  const { shoppingList, fetchShoppingList, createShoppingList } =
+    useShoppingList();
 
   const [customMeals, setCustomMeals] = useState<Record<string, string>>({});
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     fetchMeals();
+    fetchShoppingList();
   }, []);
 
   const handleCustomMealChange = (day: string, value: string) => {
@@ -91,7 +96,12 @@ export const SelectMealsForm = () => {
 
       setSuccessMessage("Meals selected successfully!");
 
-      await createShoppingList(weeklyMealsList, meals);
+      await createShoppingList(
+        weeklyMealsList,
+        meals,
+        shoppingList,
+        data.keepCurrentList,
+      );
       setTimeout(() => {
         navigate("/");
       }, 2000);
@@ -122,6 +132,7 @@ export const SelectMealsForm = () => {
           />
           {watch(day as keyof SelectMealsFormData) === "__other__" && (
             <input
+              autoFocus
               type="text"
               placeholder="Enter meal name"
               value={customMeals[day] || ""}
@@ -131,6 +142,24 @@ export const SelectMealsForm = () => {
           )}
         </div>
       ))}
+      <label className="mt-2 flex items-center gap-2 self-start">
+        <Controller
+          name="keepCurrentList"
+          control={control}
+          defaultValue={true}
+          render={({ field }) => (
+            <Checkbox.Root
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              className={`flex h-5 min-w-5 items-center justify-center rounded border-2 border-sky-200 ${field.value ? "bg-sky-200" : ""}`}>
+              <Checkbox.Indicator className="text-black">
+                <LuCheck />
+              </Checkbox.Indicator>
+            </Checkbox.Root>
+          )}
+        />
+        Keep existing shopping list items?
+      </label>
       <Button type="submit" size="large" className="mt-2">
         <LuSparkles /> Create List
       </Button>

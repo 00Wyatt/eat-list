@@ -24,7 +24,6 @@ export const ShoppingList = () => {
   }, []);
 
   const handleAddItem = (item: ShoppingListItem) => {
-    console.log("Input Value:", item);
     addShoppingListItem(item);
     setShowInput(false);
   };
@@ -57,7 +56,7 @@ export const ShoppingList = () => {
           onCancel={() => setShowInput(false)}
         />
       ) : (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <Button size="large" onClick={() => setShowInput(true)}>
             <LuPlus /> Add Item
           </Button>
