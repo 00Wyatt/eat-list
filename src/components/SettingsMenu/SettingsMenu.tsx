@@ -14,8 +14,8 @@ export const SettingsMenu = () => {
         </button>
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Content className="mr-3 flex flex-col gap-2 rounded-lg border border-sky-200 bg-white p-3 shadow-md">
-          <p>{user?.email}</p>
+        <Popover.Content className="mr-3 flex max-w-40 flex-col gap-2 rounded-lg border-t-2 border-sky-200 bg-white p-2.5 text-gray-900 shadow-lg">
+          <p className="truncate">{user?.email}</p>
           <Button color="danger" className="w-full" onClick={logout}>
             Logout
           </Button>
