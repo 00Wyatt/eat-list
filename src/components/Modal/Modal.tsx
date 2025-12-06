@@ -11,7 +11,9 @@ export const Modal = ({ triggerText, title, description }: ModalProps) => {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="text-start font-medium">{triggerText}</button>
+        <button className="font-medium underline decoration-gray-400 underline-offset-4">
+          {triggerText}
+        </button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black opacity-40" />

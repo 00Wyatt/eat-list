@@ -29,7 +29,20 @@ export const ShoppingList = () => {
   };
 
   if (!shoppingList || shoppingList.length === 0) {
-    return null;
+    return (
+      <>
+        {showInput ? (
+          <ShoppingListAddItem
+            onAdd={handleAddItem}
+            onCancel={() => setShowInput(false)}
+          />
+        ) : (
+          <Button size="large" onClick={() => setShowInput(true)}>
+            <LuPlus /> New Shopping List
+          </Button>
+        )}
+      </>
+    );
   }
 
   return (

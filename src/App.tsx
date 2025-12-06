@@ -10,7 +10,7 @@ const appTitle = "Eat List";
 
 export default function App() {
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col">
+    <div className="mx-auto flex min-h-screen max-w-md flex-col text-gray-900">
       <AuthProvider>
         <BrowserRouter>
           <Routes>

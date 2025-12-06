@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router";
 import { LuCalendarPlus } from "react-icons/lu";
+import { Separator } from "radix-ui";
 import { ShoppingList } from "@/components/ShoppingList";
 import { useWeeklyMeals } from "@/hooks";
 import { useMeals } from "@/hooks";
@@ -23,6 +24,7 @@ export const Home = () => {
   return (
     <div className="flex flex-col gap-4 p-5">
       <ShoppingList />
+      <Separator.Root className="my-2 h-[1px] w-full bg-gray-300" />
       {weeklyMeals ? (
         <WeeklyMealsSection
           meals={meals}
@@ -30,11 +32,8 @@ export const Home = () => {
           clearWeeklyMeals={handleClearWeeklyMeals}
         />
       ) : (
-        <p>No meals selected for this week.</p>
-      )}
-      {!weeklyMeals && (
         <Link to="/select-meals">
-          <Button>
+          <Button size="large" className="w-full">
             <LuCalendarPlus /> Select Meals
           </Button>
         </Link>

@@ -1,5 +1,4 @@
-import { Separator } from "radix-ui";
-import { LuAsterisk, LuCalendarPlus, LuTrash2 } from "react-icons/lu";
+import { LuCalendarPlus, LuTrash2 } from "react-icons/lu";
 import { Modal } from "../Modal";
 import { ConfirmationDialog } from "../common/ConfirmationDialog";
 import { Button } from "../common/Button";
@@ -19,7 +18,6 @@ export const WeeklyMealsSection = ({
 }: WeeklyMealsSectionProps) => {
   return (
     <>
-      <Separator.Root className="my-2 h-[1px] w-full bg-gray-300" />
       <h2 className="text-sm font-medium tracking-wider text-gray-800 uppercase">
         Weekly Meals:
       </h2>
@@ -47,7 +45,6 @@ export const WeeklyMealsSection = ({
               ) : (
                 <>
                   <span className="font-medium">{mealObj.name}</span>
-                  <LuAsterisk className="ml-[-6px]" />
                 </>
               )}
             </li>
