@@ -4,6 +4,7 @@ import { ConfirmationDialog } from "../common/ConfirmationDialog";
 import { Button } from "../common/Button";
 import type { Meal, WeeklyMeals } from "@/types";
 import { Link } from "react-router";
+import { sortDays } from "@/utils/helpers";
 
 type WeeklyMealsSectionProps = {
   meals: Meal[] | null;
@@ -16,14 +17,17 @@ export const WeeklyMealsSection = ({
   weeklyMeals,
   clearWeeklyMeals,
 }: WeeklyMealsSectionProps) => {
+  const days = Object.keys(weeklyMeals).filter((day) => weeklyMeals[day].name);
+  const sortedDays = sortDays(days);
+
   return (
     <>
       <h2 className="text-sm font-medium tracking-wider text-gray-800 uppercase">
         Weekly Meals:
       </h2>
       <ul className="flex flex-col gap-2">
-        {Object.entries(weeklyMeals).map(([day, mealObj]) => {
-          if (!mealObj.name) return null;
+        {sortedDays.map((day) => {
+          const mealObj = weeklyMeals[day];
           const meal = meals?.find((m) => m.id === mealObj.id);
           return (
             <li key={day} className="flex items-center gap-2">
@@ -37,7 +41,12 @@ export const WeeklyMealsSection = ({
                   description={
                     <ul>
                       {meal.ingredients.map((ingredient) => (
-                        <li key={ingredient.name}>{ingredient.name}</li>
+                        <li key={ingredient.name}>
+                          {ingredient.name}{" "}
+                          <span className="text-sm text-gray-600">
+                            ({ingredient.quantity} x {ingredient.unit})
+                          </span>
+                        </li>
                       ))}
                     </ul>
                   }

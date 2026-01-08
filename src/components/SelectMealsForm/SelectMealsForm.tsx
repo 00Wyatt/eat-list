@@ -8,6 +8,7 @@ import { LuCheck, LuSparkles } from "react-icons/lu";
 import { FormSelect } from "./components/FormSelect";
 import { useMeals, useShoppingList, useWeeklyMeals } from "@/hooks";
 import { Button } from "../common/Button";
+import { WEEK_DAYS as daysOfWeek } from "@/utils/helpers";
 
 const schema = z.object({
   Monday: z.string(),
@@ -21,16 +22,6 @@ const schema = z.object({
 });
 
 export type SelectMealsFormData = z.infer<typeof schema>;
-
-const daysOfWeek = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
 
 export const SelectMealsForm = () => {
   const {
