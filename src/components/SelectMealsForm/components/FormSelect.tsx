@@ -5,7 +5,7 @@ type FormSelectProps = {
   id: string;
   label?: string;
   placeholder?: string;
-  mealList: Meal[];
+  mealList?: Meal[];
   register: UseFormRegisterReturn;
   extraOptions?: { value: string; label: string }[];
 };
@@ -34,7 +34,7 @@ export const FormSelect = ({
             {placeholder}
           </option>
         )}
-        {mealList.map((meal) => (
+        {mealList?.map((meal) => (
           <option key={meal.id} value={meal.id}>
             {meal.name}
           </option>

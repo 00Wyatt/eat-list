@@ -1,10 +1,12 @@
+import { useEffect } from "react";
+import { Link } from "react-router";
 import { LuCalendarPlus, LuTrash2 } from "react-icons/lu";
 import { Modal } from "../Modal";
 import { ConfirmationDialog } from "../common/ConfirmationDialog";
 import { Button } from "../common/Button";
 import type { Meal, WeeklyMeals } from "@/types";
-import { Link } from "react-router";
 import { sortDays } from "@/utils/helpers";
+import { useWeeklyMeals } from "@/hooks";
 
 type WeeklyMealsSectionProps = {
   meals: Meal[] | null;
@@ -17,8 +19,14 @@ export const WeeklyMealsSection = ({
   weeklyMeals,
   clearWeeklyMeals,
 }: WeeklyMealsSectionProps) => {
+  const { fetchStartingDay, startingDay } = useWeeklyMeals();
+
+  useEffect(() => {
+    fetchStartingDay();
+  }, []);
+
   const days = Object.keys(weeklyMeals).filter((day) => weeklyMeals[day].name);
-  const sortedDays = sortDays(days);
+  const sortedDays = sortDays(days, startingDay || "Monday");
 
   return (
     <>

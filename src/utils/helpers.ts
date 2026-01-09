@@ -17,12 +17,12 @@ export const WEEK_DAYS = [
 
 export function sortDays(
   days: string[],
-  startDay: string = "Monday",
+  startingDay: string = "Monday",
 ): string[] {
-  const startIndex = WEEK_DAYS.indexOf(startDay);
+  const startingIndex = WEEK_DAYS.indexOf(startingDay);
   const orderedDays = [
-    ...WEEK_DAYS.slice(startIndex),
-    ...WEEK_DAYS.slice(0, startIndex),
+    ...WEEK_DAYS.slice(startingIndex),
+    ...WEEK_DAYS.slice(0, startingIndex),
   ];
   return days
     .slice()

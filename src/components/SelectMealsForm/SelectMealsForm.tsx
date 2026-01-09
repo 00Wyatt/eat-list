@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Checkbox } from "radix-ui";
+import { Checkbox, Separator } from "radix-ui";
 import { LuCheck, LuSparkles } from "react-icons/lu";
 import { FormSelect } from "./components/FormSelect";
 import { useMeals, useShoppingList, useWeeklyMeals } from "@/hooks";
@@ -19,6 +19,7 @@ const schema = z.object({
   Saturday: z.string(),
   Sunday: z.string(),
   keepCurrentList: z.boolean(),
+  startingDay: z.string(),
 });
 
 export type SelectMealsFormData = z.infer<typeof schema>;
@@ -39,7 +40,7 @@ export const SelectMealsForm = () => {
   const navigate = useNavigate();
 
   const { meals, fetchMeals } = useMeals();
-  const { createWeeklyMeals } = useWeeklyMeals();
+  const { createWeeklyMeals, storeStartingDay } = useWeeklyMeals();
   const { shoppingList, fetchShoppingList, createShoppingList } =
     useShoppingList();
 
@@ -84,6 +85,7 @@ export const SelectMealsForm = () => {
 
     try {
       const weeklyMealsList = await createWeeklyMeals(weeklyMeals);
+      await storeStartingDay({ day: data.startingDay || "Monday" });
 
       setSuccessMessage("Meals selected successfully!");
 
@@ -106,6 +108,10 @@ export const SelectMealsForm = () => {
       });
     }
   };
+
+  const startingDayOptions = daysOfWeek.map((day) => {
+    return { value: day, label: day };
+  });
 
   return (
     <form
@@ -133,6 +139,14 @@ export const SelectMealsForm = () => {
           )}
         </div>
       ))}
+      <Separator.Root className="my-2 h-[1px] w-full bg-gray-300" />
+      <FormSelect
+        id="startingDay"
+        label="Starting Day"
+        placeholder="Select a starting day (Optional)"
+        register={register("startingDay" as keyof SelectMealsFormData)}
+        extraOptions={startingDayOptions}
+      />
       <label className="mt-1 flex items-center gap-2 self-start">
         <Controller
           name="keepCurrentList"
