@@ -8,11 +8,14 @@ export function useShoppingList() {
   const [shoppingList, setShoppingList] = useState<ShoppingListItem[] | null>(
     null,
   );
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchShoppingList = useCallback(async () => {
+    setLoading(true);
     const data = await useDoc("shoppingList", "current");
     const items = data && Array.isArray(data.items) ? data.items : null;
     setShoppingList(items ?? null);
+    setLoading(false);
     return items ?? null;
   }, []);
 
@@ -126,5 +129,6 @@ export function useShoppingList() {
     removeShoppingListItem,
     addShoppingListItem,
     toggleChecked,
+    loading,
   };
 }

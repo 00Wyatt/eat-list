@@ -7,10 +7,13 @@ import type { WeeklyMeals } from "@/types";
 export function useWeeklyMeals() {
   const [weeklyMeals, setWeeklyMeals] = useState<WeeklyMeals | null>(null);
   const [startingDay, setStartingDay] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchWeeklyMeals = useCallback(async () => {
+    setLoading(true);
     const data = await useDoc("weeklyMeals", "current");
     setWeeklyMeals(data ?? null);
+    setLoading(false);
     return data ?? null;
   }, []);
 
@@ -30,8 +33,10 @@ export function useWeeklyMeals() {
   }, []);
 
   const fetchStartingDay = useCallback(async () => {
+    setLoading(true);
     const data = await useDoc("weeklyMeals", "startingDay");
     setStartingDay(data?.day ?? null);
+    setLoading(false);
     return data ?? null;
   }, []);
 
@@ -49,5 +54,6 @@ export function useWeeklyMeals() {
     startingDay,
     fetchStartingDay,
     storeStartingDay,
+    loading,
   };
 }
