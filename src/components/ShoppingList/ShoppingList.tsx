@@ -6,6 +6,7 @@ import { ShoppingListItemComponent } from "./components/ShoppingListItemComponen
 import { ConfirmationDialog } from "../common/ConfirmationDialog";
 import { Button } from "../common/Button";
 import { ShoppingListAddItem } from "./components/ShoppingListAddItem";
+import { ShoppingListSkeleton } from "./components/ShoppingListSkeleton";
 
 export const ShoppingList = () => {
   const [showInput, setShowInput] = useState(false);
@@ -17,6 +18,7 @@ export const ShoppingList = () => {
     removeShoppingListItem,
     addShoppingListItem,
     toggleChecked,
+    loading,
   } = useShoppingList();
 
   useEffect(() => {
@@ -27,6 +29,10 @@ export const ShoppingList = () => {
     addShoppingListItem(item);
     setShowInput(false);
   };
+
+  if (loading) {
+    return <ShoppingListSkeleton />;
+  }
 
   if (!shoppingList || shoppingList.length === 0) {
     return (
@@ -59,7 +65,13 @@ export const ShoppingList = () => {
               e.stopPropagation();
               removeShoppingListItem(shoppingListItem.name);
             }}
-            onToggleChecked={() => toggleChecked(shoppingListItem.name)}
+            onToggleChecked={async (_checked, revert) => {
+              try {
+                await toggleChecked(shoppingListItem.name);
+              } catch {
+                revert();
+              }
+            }}
           />
         ))}
       </ul>
