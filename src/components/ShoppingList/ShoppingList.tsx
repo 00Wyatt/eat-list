@@ -59,7 +59,13 @@ export const ShoppingList = () => {
               e.stopPropagation();
               removeShoppingListItem(shoppingListItem.name);
             }}
-            onToggleChecked={() => toggleChecked(shoppingListItem.name)}
+            onToggleChecked={async (_checked, revert) => {
+              try {
+                await toggleChecked(shoppingListItem.name);
+              } catch {
+                revert();
+              }
+            }}
           />
         ))}
       </ul>
