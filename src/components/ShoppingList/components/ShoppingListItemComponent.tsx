@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Checkbox } from "radix-ui";
 import { LuCheck, LuX } from "react-icons/lu";
 import { twMerge } from "tailwind-merge";
@@ -16,28 +16,20 @@ export const ShoppingListItemComponent = ({
   onToggleChecked,
 }: ShoppingListItemProps) => {
   const [checked, setChecked] = useState(shoppingListItem.checked);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handlePressStart = () => {
-    if (checked) {
-      timerRef.current = setTimeout(() => {
-        handleToggleChecked();
-        timerRef.current = null;
-      }, 300);
-    }
+  const handleListItemClick = () => {
+    if (!checked) handleToggleChecked();
   };
 
-  const handlePressEnd = () => {
-    if (checked && timerRef.current) {
-      clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
+  const handleCheckboxClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    handleToggleChecked();
   };
 
-  const handleClick = () => {
-    if (!checked) {
-      handleToggleChecked();
-    }
+  const handleLabelClick = (e: React.MouseEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!checked) handleToggleChecked();
   };
 
   const handleToggleChecked = () => {
@@ -53,12 +45,7 @@ export const ShoppingListItemComponent = ({
 
   return (
     <li
-      onMouseDown={handlePressStart}
-      onMouseUp={handlePressEnd}
-      onMouseLeave={handlePressEnd}
-      onTouchStart={handlePressStart}
-      onTouchEnd={handlePressEnd}
-      onClick={handleClick}
+      onClick={handleListItemClick}
       className={twMerge(
         "flex items-center gap-3 rounded bg-sky-50 px-4 py-3 duration-100",
         checkedListItemStyles,
@@ -69,14 +56,16 @@ export const ShoppingListItemComponent = ({
         className={twMerge(
           "flex h-5 min-w-5 items-center justify-center rounded bg-sky-200",
           checkedBoxStyles,
-        )}>
+        )}
+        onClick={handleCheckboxClick}>
         <Checkbox.Indicator className="text-black">
           <LuCheck />
         </Checkbox.Indicator>
       </Checkbox.Root>
       <label
         htmlFor={shoppingListItem.name}
-        className="flex items-center gap-1 select-none">
+        className="flex items-center gap-1 select-none"
+        onClick={handleLabelClick}>
         <span className="font-medium text-gray-900">
           {shoppingListItem.quantityRounded} x {shoppingListItem.name}
         </span>
