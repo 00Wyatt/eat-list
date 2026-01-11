@@ -90,21 +90,33 @@ export function useShoppingList() {
   }, []);
 
   const removeShoppingListItem = useCallback(
-    async (name: string) => {
+    async (name: string, revert: () => void) => {
       if (!shoppingList) return;
       const updatedList = shoppingList.filter((item) => item.name !== name);
-      await setDoc(doc(db, "shoppingList", "current"), { items: updatedList });
       setShoppingList(updatedList);
+      try {
+        await setDoc(doc(db, "shoppingList", "current"), {
+          items: updatedList,
+        });
+      } catch {
+        revert();
+      }
     },
     [shoppingList],
   );
 
   const addShoppingListItem = useCallback(
-    async (item: ShoppingListItem) => {
+    async (item: ShoppingListItem, revert: () => void) => {
       const currentList = shoppingList ?? [];
       const updatedList = currentList.concat([item]);
-      await setDoc(doc(db, "shoppingList", "current"), { items: updatedList });
       setShoppingList(updatedList);
+      try {
+        await setDoc(doc(db, "shoppingList", "current"), {
+          items: updatedList,
+        });
+      } catch {
+        revert();
+      }
     },
     [shoppingList],
   );

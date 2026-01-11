@@ -26,7 +26,7 @@ export const ShoppingList = () => {
   }, []);
 
   const handleAddItem = (item: ShoppingListItem) => {
-    addShoppingListItem(item);
+    addShoppingListItem(item, () => setTimeout(() => fetchShoppingList(), 0));
     setShowInput(false);
   };
 
@@ -63,7 +63,9 @@ export const ShoppingList = () => {
             shoppingListItem={shoppingListItem}
             onRemove={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.stopPropagation();
-              removeShoppingListItem(shoppingListItem.name);
+              removeShoppingListItem(shoppingListItem.name, () =>
+                setTimeout(() => fetchShoppingList(), 0),
+              );
             }}
             onToggleChecked={async (_checked, revert) => {
               try {
