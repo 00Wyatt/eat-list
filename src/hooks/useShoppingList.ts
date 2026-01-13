@@ -13,7 +13,13 @@ export function useShoppingList() {
   const fetchShoppingList = useCallback(async () => {
     setLoading(true);
     const data = await useDoc("shoppingList", "current");
-    const items = data && Array.isArray(data.items) ? data.items : null;
+    const items =
+      data && Array.isArray(data.items)
+        ? data.items.map((item: ShoppingListItem) => ({
+            ...item,
+            category: item.category ?? null,
+          }))
+        : null;
     setShoppingList(items ?? null);
     setLoading(false);
     return items ?? null;
@@ -112,9 +118,7 @@ export function useShoppingList() {
   };
 }
 
-////////////////////
-// Local Helpers //
-///////////////////
+/*** Local Helpers ***/
 
 function buildShoppingListItemsFromWeeklyMeals(
   weeklyMealList: WeeklyMeals,
@@ -163,6 +167,7 @@ function toShoppingListItems(
     quantity: Math.round(ingredient.quantity * 100) / 100,
     quantityRounded: Math.max(1, Math.round(ingredient.quantity)),
     checked: false,
+    category: ingredient.category ?? null,
   }));
 }
 
@@ -177,8 +182,19 @@ function mergeShoppingLists(
     if (grouped[item.name]) {
       grouped[item.name].quantity += item.quantity;
       grouped[item.name].quantityRounded += item.quantityRounded;
+
+      const existingCategory = grouped[item.name].category ?? null;
+      const incomingCategory = item.category ?? null;
+      if (existingCategory === null) {
+        grouped[item.name].category = incomingCategory;
+      } else if (
+        incomingCategory !== null &&
+        incomingCategory !== existingCategory
+      ) {
+        grouped[item.name].category = null;
+      }
     } else {
-      grouped[item.name] = { ...item };
+      grouped[item.name] = { ...item, category: item.category ?? null };
     }
   });
 

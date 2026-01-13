@@ -2,6 +2,7 @@ export type Ingredient = {
   name: string;
   quantity: number;
   unit: string;
+  category?: string | null;
 };
 
 export type Meal = {
@@ -18,4 +19,5 @@ export type ShoppingListItem = {
   quantity: number;
   quantityRounded: number;
   unit: string;
+  category?: string | null;
 };
