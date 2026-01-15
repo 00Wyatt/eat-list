@@ -13,7 +13,13 @@ export function useShoppingList() {
   const fetchShoppingList = useCallback(async () => {
     setLoading(true);
     const data = await useDoc("shoppingList", "current");
-    const items = data && Array.isArray(data.items) ? data.items : null;
+    const items =
+      data && Array.isArray(data.items)
+        ? data.items.map((item: ShoppingListItem) => ({
+            ...item,
+            category: item.category ?? null,
+          }))
+        : null;
     setShoppingList(items ?? null);
     setLoading(false);
     return items ?? null;
@@ -23,53 +29,20 @@ export function useShoppingList() {
     async (
       weeklyMealList: WeeklyMeals | null,
       mealsList: Meal[] | null,
-      shoppingList: ShoppingListItem[] | null,
+      currentShoppingList: ShoppingListItem[] | null,
       keepCurrentList: boolean,
     ) => {
       if (!weeklyMealList || !mealsList) return [];
 
-      const mealObjs = Object.values(weeklyMealList).filter(
-        (mealObj) => mealObj.id,
+      const newItems = buildShoppingListItemsFromWeeklyMeals(
+        weeklyMealList,
+        mealsList,
       );
 
-      const allIngredients: Ingredient[] = mealObjs.flatMap((mealObj) => {
-        const meal = mealsList.find((m) => m.id === mealObj.id);
-        return meal && meal.ingredients ? meal.ingredients : [];
-      });
-
-      const grouped: { [name: string]: Ingredient } = {};
-
-      allIngredients.forEach((ingredient) => {
-        if (grouped[ingredient.name]) {
-          grouped[ingredient.name].quantity += ingredient.quantity;
-        } else {
-          grouped[ingredient.name] = { ...ingredient };
-        }
-      });
-
-      const newItems = Object.values(grouped).map((ingredient) => ({
-        ...ingredient,
-        quantity: Math.round(ingredient.quantity * 100) / 100,
-        quantityRounded: Math.max(1, Math.round(ingredient.quantity)),
-        checked: false,
-      }));
-
-      let finalList: ShoppingListItem[] = newItems;
-
-      if (keepCurrentList && Array.isArray(shoppingList)) {
-        const combinedList = [...newItems, ...shoppingList];
-        const grouped: { [name: string]: ShoppingListItem } = {};
-
-        combinedList.forEach((item) => {
-          if (grouped[item.name]) {
-            grouped[item.name].quantity += item.quantity;
-            grouped[item.name].quantityRounded += item.quantityRounded;
-          } else {
-            grouped[item.name] = { ...item };
-          }
-        });
-        finalList = Object.values(grouped);
-      }
+      const finalList =
+        keepCurrentList && Array.isArray(currentShoppingList)
+          ? mergeShoppingLists(newItems, currentShoppingList)
+          : newItems;
 
       await setDoc(doc(db, "shoppingList", "current"), {
         items: finalList,
@@ -143,4 +116,87 @@ export function useShoppingList() {
     toggleChecked,
     loading,
   };
+}
+
+/*** Local Helpers ***/
+
+function buildShoppingListItemsFromWeeklyMeals(
+  weeklyMealList: WeeklyMeals,
+  mealsList: Meal[],
+): ShoppingListItem[] {
+  const ingredients = getIngredientsFromWeeklyMeals(weeklyMealList, mealsList);
+  const grouped = groupIngredientsByName(ingredients);
+  return toShoppingListItems(grouped);
+}
+
+function getIngredientsFromWeeklyMeals(
+  weeklyMealList: WeeklyMeals,
+  mealsList: Meal[],
+): Ingredient[] {
+  const mealObjs = Object.values(weeklyMealList).filter(
+    (mealObj) => mealObj.id,
+  );
+
+  return mealObjs.flatMap((mealObj) => {
+    const meal = mealsList.find((m) => m.id === mealObj.id);
+    return meal && meal.ingredients ? meal.ingredients : [];
+  });
+}
+
+function groupIngredientsByName(
+  ingredients: Ingredient[],
+): Record<string, Ingredient> {
+  const grouped: Record<string, Ingredient> = {};
+
+  ingredients.forEach((ingredient) => {
+    if (grouped[ingredient.name]) {
+      grouped[ingredient.name].quantity += ingredient.quantity;
+    } else {
+      grouped[ingredient.name] = { ...ingredient };
+    }
+  });
+
+  return grouped;
+}
+
+function toShoppingListItems(
+  grouped: Record<string, Ingredient>,
+): ShoppingListItem[] {
+  return Object.values(grouped).map((ingredient) => ({
+    ...ingredient,
+    quantity: Math.round(ingredient.quantity * 100) / 100,
+    quantityRounded: Math.max(1, Math.round(ingredient.quantity)),
+    checked: false,
+    category: ingredient.category ?? null,
+  }));
+}
+
+function mergeShoppingLists(
+  newItems: ShoppingListItem[],
+  currentItems: ShoppingListItem[],
+): ShoppingListItem[] {
+  const combinedList = [...newItems, ...currentItems];
+  const grouped: Record<string, ShoppingListItem> = {};
+
+  combinedList.forEach((item) => {
+    if (grouped[item.name]) {
+      grouped[item.name].quantity += item.quantity;
+      grouped[item.name].quantityRounded += item.quantityRounded;
+
+      const existingCategory = grouped[item.name].category ?? null;
+      const incomingCategory = item.category ?? null;
+      if (existingCategory === null) {
+        grouped[item.name].category = incomingCategory;
+      } else if (
+        incomingCategory !== null &&
+        incomingCategory !== existingCategory
+      ) {
+        grouped[item.name].category = null;
+      }
+    } else {
+      grouped[item.name] = { ...item, category: item.category ?? null };
+    }
+  });
+
+  return Object.values(grouped);
 }

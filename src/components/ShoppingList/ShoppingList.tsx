@@ -51,32 +51,43 @@ export const ShoppingList = () => {
     );
   }
 
+  const groupedShoppingList = groupShoppingListItemsByCategory(shoppingList);
+
   return (
     <div className="flex w-full flex-col gap-4">
       <h2 className="text-sm font-medium tracking-wider text-gray-800 uppercase">
         Shopping List
       </h2>
-      <ul className="flex flex-col gap-2">
-        {shoppingList.map((shoppingListItem) => (
-          <ShoppingListItemComponent
-            key={shoppingListItem.name}
-            shoppingListItem={shoppingListItem}
-            onRemove={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.stopPropagation();
-              removeShoppingListItem(shoppingListItem.name, () =>
-                setTimeout(() => fetchShoppingList(), 0),
-              );
-            }}
-            onToggleChecked={async (_checked, revert) => {
-              try {
-                await toggleChecked(shoppingListItem.name);
-              } catch {
-                revert();
-              }
-            }}
-          />
+      <div className="flex flex-col gap-4">
+        {groupedShoppingList.map((group) => (
+          <section key={group.category} className="flex flex-col gap-2">
+            <h3 className="text-xs font-medium tracking-wider text-gray-700 uppercase">
+              {group.category}
+            </h3>
+            <ul className="flex flex-col gap-2">
+              {group.items.map((shoppingListItem) => (
+                <ShoppingListItemComponent
+                  key={shoppingListItem.name}
+                  shoppingListItem={shoppingListItem}
+                  onRemove={(e: React.MouseEvent<HTMLButtonElement>) => {
+                    e.stopPropagation();
+                    removeShoppingListItem(shoppingListItem.name, () =>
+                      setTimeout(() => fetchShoppingList(), 0),
+                    );
+                  }}
+                  onToggleChecked={async (_checked, revert) => {
+                    try {
+                      await toggleChecked(shoppingListItem.name);
+                    } catch {
+                      revert();
+                    }
+                  }}
+                />
+              ))}
+            </ul>
+          </section>
         ))}
-      </ul>
+      </div>
       {showInput ? (
         <ShoppingListAddItem
           onAdd={handleAddItem}
@@ -102,3 +113,58 @@ export const ShoppingList = () => {
     </div>
   );
 };
+
+/*** Local Helpers ***/
+
+type ShoppingListCategoryGroup = {
+  category: string;
+  items: ShoppingListItem[];
+};
+
+function normalizeCategory(
+  category: ShoppingListItem["category"],
+): string | null {
+  if (typeof category !== "string") return null;
+  const trimmed = category.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function groupShoppingListItemsByCategory(
+  items: ShoppingListItem[],
+): ShoppingListCategoryGroup[] {
+  const miscLabel = "Misc";
+  const miscItems: ShoppingListItem[] = [];
+
+  const byCategoryKey = new Map<
+    string,
+    { label: string; items: ShoppingListItem[] }
+  >();
+
+  for (const item of items) {
+    const normalized = normalizeCategory(item.category);
+    if (normalized === null) {
+      miscItems.push(item);
+      continue;
+    }
+
+    const key = normalized.toLowerCase();
+    const existing = byCategoryKey.get(key);
+    if (existing) {
+      existing.items.push(item);
+    } else {
+      byCategoryKey.set(key, { label: normalized, items: [item] });
+    }
+  }
+
+  const groups: ShoppingListCategoryGroup[] = Array.from(byCategoryKey.values())
+    .sort((a, b) =>
+      b.label.localeCompare(a.label, undefined, { sensitivity: "base" }),
+    )
+    .map((g) => ({ category: g.label, items: g.items }));
+
+  if (miscItems.length > 0) {
+    groups.push({ category: miscLabel, items: miscItems });
+  }
+
+  return groups;
+}

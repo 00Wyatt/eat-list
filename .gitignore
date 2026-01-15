@@ -26,3 +26,4 @@ dist-ssr
 .env
 emulator-data
 todo.md
+scripts/meals-data.csv
