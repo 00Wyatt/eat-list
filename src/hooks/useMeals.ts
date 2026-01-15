@@ -12,6 +12,7 @@ export function useMeals() {
         const data = doc.data();
         return { id: doc.id, name: data.name, ingredients: data.ingredients };
       });
+      mealsData.sort((a: Meal, b: Meal) => a.name.localeCompare(b.name));
       setMeals(mealsData);
       return mealsData;
     }
