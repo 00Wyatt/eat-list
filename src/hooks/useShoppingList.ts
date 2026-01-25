@@ -120,7 +120,49 @@ export function useShoppingList() {
       setShoppingList(updatedList);
 
       try {
-        await setDoc(doc(db, "shoppingList", "current"), { items: updatedList });
+        await setDoc(doc(db, "shoppingList", "current"), {
+          items: updatedList,
+        });
+      } catch (error) {
+        setShoppingList(previousList);
+        throw error;
+      }
+    },
+    [shoppingList],
+  );
+
+  const renameShoppingListItem = useCallback(
+    async (currentName: string, nextName: string) => {
+      if (!shoppingList) return;
+
+      const nextTrimmed = nextName.trim();
+      if (nextTrimmed.length === 0) {
+        throw new Error("Item name cannot be empty");
+      }
+
+      const currentKey = currentName.trim().toLowerCase();
+      const nextKey = nextTrimmed.toLowerCase();
+
+      const duplicateExists = shoppingList.some(
+        (item) =>
+          item.name.trim().toLowerCase() === nextKey &&
+          item.name.trim().toLowerCase() !== currentKey,
+      );
+      if (duplicateExists) {
+        throw new Error("An item with that name already exists");
+      }
+
+      const previousList = shoppingList;
+      const updatedList = shoppingList.map((item) =>
+        item.name === currentName ? { ...item, name: nextTrimmed } : item,
+      );
+
+      setShoppingList(updatedList);
+
+      try {
+        await setDoc(doc(db, "shoppingList", "current"), {
+          items: updatedList,
+        });
       } catch (error) {
         setShoppingList(previousList);
         throw error;
@@ -138,6 +180,7 @@ export function useShoppingList() {
     addShoppingListItem,
     toggleChecked,
     changeQuantityRounded,
+    renameShoppingListItem,
     loading,
   };
 }

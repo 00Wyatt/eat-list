@@ -19,6 +19,7 @@ export const ShoppingList = () => {
     addShoppingListItem,
     toggleChecked,
     changeQuantityRounded,
+    renameShoppingListItem,
     loading,
   } = useShoppingList();
 
@@ -85,6 +86,12 @@ export const ShoppingList = () => {
                   }}
                   onChangeQuantityRounded={async (delta) => {
                     await changeQuantityRounded(shoppingListItem.name, delta);
+                  }}
+                  onRenameItemName={async (nextName) => {
+                    await renameShoppingListItem(
+                      shoppingListItem.name,
+                      nextName,
+                    );
                   }}
                 />
               ))}

@@ -10,6 +10,7 @@ type ShoppingListItemProps = {
   onRemove: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onToggleChecked: (checked: boolean, revert: () => void) => void;
   onChangeQuantityRounded: (delta: number) => Promise<void>;
+  onRenameItemName: (nextName: string) => Promise<void>;
 };
 
 export const ShoppingListItemComponent = ({
@@ -17,6 +18,7 @@ export const ShoppingListItemComponent = ({
   onRemove,
   onToggleChecked,
   onChangeQuantityRounded,
+  onRenameItemName,
 }: ShoppingListItemProps) => {
   const [checked, setChecked] = useState(shoppingListItem.checked);
 
@@ -81,6 +83,7 @@ export const ShoppingListItemComponent = ({
       <ShoppingListItemActionsMenu
         shoppingListItem={shoppingListItem}
         onChangeQuantityRounded={onChangeQuantityRounded}
+        onRenameItemName={onRenameItemName}
       />
       {onRemove && (
         <button
