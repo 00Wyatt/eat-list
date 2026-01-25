@@ -106,6 +106,29 @@ export function useShoppingList() {
     [shoppingList],
   );
 
+  const changeQuantityRounded = useCallback(
+    async (name: string, delta: number) => {
+      if (!shoppingList) return;
+
+      const previousList = shoppingList;
+      const updatedList = shoppingList.map((item) => {
+        if (item.name !== name) return item;
+        const nextQuantityRounded = Math.max(1, item.quantityRounded + delta);
+        return { ...item, quantityRounded: nextQuantityRounded };
+      });
+
+      setShoppingList(updatedList);
+
+      try {
+        await setDoc(doc(db, "shoppingList", "current"), { items: updatedList });
+      } catch (error) {
+        setShoppingList(previousList);
+        throw error;
+      }
+    },
+    [shoppingList],
+  );
+
   return {
     shoppingList,
     fetchShoppingList,
@@ -114,6 +137,7 @@ export function useShoppingList() {
     removeShoppingListItem,
     addShoppingListItem,
     toggleChecked,
+    changeQuantityRounded,
     loading,
   };
 }

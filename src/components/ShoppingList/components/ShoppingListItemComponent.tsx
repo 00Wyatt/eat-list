@@ -3,17 +3,20 @@ import { Checkbox } from "radix-ui";
 import { LuCheck, LuX } from "react-icons/lu";
 import { twMerge } from "tailwind-merge";
 import type { ShoppingListItem } from "@/types";
+import { ShoppingListItemActionsMenu } from "./ShoppingListItemActionsMenu";
 
 type ShoppingListItemProps = {
   shoppingListItem: ShoppingListItem;
   onRemove: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onToggleChecked: (checked: boolean, revert: () => void) => void;
+  onChangeQuantityRounded: (delta: number) => Promise<void>;
 };
 
 export const ShoppingListItemComponent = ({
   shoppingListItem,
   onRemove,
   onToggleChecked,
+  onChangeQuantityRounded,
 }: ShoppingListItemProps) => {
   const [checked, setChecked] = useState(shoppingListItem.checked);
 
@@ -75,10 +78,14 @@ export const ShoppingListItemComponent = ({
           </span>
         )}
       </label>
+      <ShoppingListItemActionsMenu
+        shoppingListItem={shoppingListItem}
+        onChangeQuantityRounded={onChangeQuantityRounded}
+      />
       {onRemove && (
         <button
           type="button"
-          className="ml-auto text-2xl text-sky-900"
+          className="p-0.5 text-2xl text-sky-900"
           onClick={onRemove}>
           <LuX />
         </button>
