@@ -15,11 +15,17 @@ export const ShoppingListItemActionsMenu = ({
   onChangeQuantityRounded,
   onRenameItemName,
 }: ShoppingListItemActionsMenuProps) => {
+  const [open, setOpen] = useState(false);
   const [quantityUpdating, setQuantityUpdating] = useState(false);
   const [editingName, setEditingName] = useState(false);
 
   return (
-    <Popover.Root>
+    <Popover.Root
+      open={open}
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
+        if (!nextOpen) setEditingName(false);
+      }}>
       <Popover.Trigger asChild>
         <button
           type="button"
@@ -39,7 +45,7 @@ export const ShoppingListItemActionsMenu = ({
           <div className="flex items-center justify-between gap-2">
             <button
               type="button"
-              className="flex h-7 w-7 items-center justify-center rounded bg-sky-50 text-sky-900 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex h-8 w-8 items-center justify-center rounded bg-sky-50 text-sky-900 disabled:cursor-not-allowed disabled:opacity-60"
               aria-label="Decrease quantity"
               disabled={
                 quantityUpdating || shoppingListItem.quantityRounded <= 1
@@ -60,7 +66,7 @@ export const ShoppingListItemActionsMenu = ({
             </div>
             <button
               type="button"
-              className="flex h-7 w-7 items-center justify-center rounded bg-sky-50 text-sky-900 disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex h-8 w-8 items-center justify-center rounded bg-sky-50 text-sky-900 disabled:cursor-not-allowed disabled:opacity-60"
               aria-label="Increase quantity"
               disabled={quantityUpdating}
               onClick={async (e) => {
@@ -81,8 +87,12 @@ export const ShoppingListItemActionsMenu = ({
               onSave={async (nextName) => {
                 await onRenameItemName(nextName);
                 setEditingName(false);
+                setOpen(false);
               }}
-              onCancel={() => setEditingName(false)}
+              onCancel={() => {
+                setEditingName(false);
+                setOpen(false);
+              }}
             />
           ) : (
             <button
