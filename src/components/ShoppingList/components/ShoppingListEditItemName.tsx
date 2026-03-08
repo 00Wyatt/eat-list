@@ -79,12 +79,6 @@ export const ShoppingListEditItemName = ({
 
       <div className="flex gap-2">
         <button
-          type="submit"
-          className="flex-1 rounded bg-sky-100 px-2 py-1 text-sm font-medium text-sky-600 disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={isSubmitting}>
-          Save
-        </button>
-        <button
           type="button"
           className="flex-1 rounded bg-gray-100 px-2 py-1 text-sm font-medium text-gray-800"
           onClick={(e) => {
@@ -92,6 +86,12 @@ export const ShoppingListEditItemName = ({
             cancel();
           }}>
           Cancel
+        </button>
+        <button
+          type="submit"
+          className="flex-1 rounded bg-sky-100 px-2 py-1 text-sm font-medium text-sky-600 disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={isSubmitting}>
+          Save
         </button>
       </div>
     </form>
