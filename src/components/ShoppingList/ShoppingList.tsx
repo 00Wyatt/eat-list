@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import type { ShoppingListItem } from "@/types";
 import { useShoppingList } from "@/hooks/useShoppingList";
@@ -13,7 +13,6 @@ export const ShoppingList = () => {
 
   const {
     shoppingList,
-    fetchShoppingList,
     clearShoppingList,
     removeShoppingListItem,
     addShoppingListItem,
@@ -23,12 +22,10 @@ export const ShoppingList = () => {
     loading,
   } = useShoppingList();
 
-  useEffect(() => {
-    fetchShoppingList();
-  }, []);
-
   const handleAddItem = (item: ShoppingListItem) => {
-    addShoppingListItem(item, () => setTimeout(() => fetchShoppingList(), 0));
+    addShoppingListItem(item, () =>
+      console.error("Failed to add shopping list item"),
+    );
     setShowInput(false);
   };
 
@@ -74,7 +71,7 @@ export const ShoppingList = () => {
                   onRemove={(e: React.MouseEvent<HTMLButtonElement>) => {
                     e.stopPropagation();
                     removeShoppingListItem(shoppingListItem.name, () =>
-                      setTimeout(() => fetchShoppingList(), 0),
+                      console.error("Failed to remove shopping list item"),
                     );
                   }}
                   onToggleChecked={async (_checked, revert) => {

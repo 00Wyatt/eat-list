@@ -41,15 +41,13 @@ export const SelectMealsForm = () => {
 
   const { meals, fetchMeals } = useMeals();
   const { createWeeklyMeals, storeStartingDay } = useWeeklyMeals();
-  const { shoppingList, fetchShoppingList, createShoppingList } =
-    useShoppingList();
+  const { shoppingList, createShoppingList } = useShoppingList();
 
   const [customMeals, setCustomMeals] = useState<Record<string, string>>({});
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     fetchMeals();
-    fetchShoppingList();
   }, []);
 
   const handleCustomMealChange = (day: string, value: string) => {

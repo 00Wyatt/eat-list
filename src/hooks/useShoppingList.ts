@@ -37,11 +37,6 @@ export function useShoppingList() {
     return () => unsubscribe();
   }, []);
 
-  // Keep this for backward compatibility, but it's a no-op now
-  const fetchShoppingList = useCallback(() => {
-    // Real-time listener handles fetching automatically
-  }, []);
-
   const createShoppingList = useCallback(
     async (
       weeklyMealList: WeeklyMeals | null,
@@ -177,7 +172,6 @@ export function useShoppingList() {
 
   return {
     shoppingList,
-    fetchShoppingList,
     createShoppingList,
     clearShoppingList,
     removeShoppingListItem,
