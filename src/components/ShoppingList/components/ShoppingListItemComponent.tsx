@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Checkbox } from "radix-ui";
 import { LuCheck, LuX } from "react-icons/lu";
 import { twMerge } from "tailwind-merge";
@@ -21,6 +21,10 @@ export const ShoppingListItemComponent = ({
   onRenameItemName,
 }: ShoppingListItemProps) => {
   const [checked, setChecked] = useState(shoppingListItem.checked);
+
+  useEffect(() => {
+    setChecked(shoppingListItem.checked);
+  }, [shoppingListItem.checked]);
 
   const handleListItemClick = () => {
     if (!checked) handleToggleChecked();
