@@ -27,3 +27,4 @@ dist-ssr
 emulator-data
 todo.md
 scripts/meals-data.csv
+scripts/storage
