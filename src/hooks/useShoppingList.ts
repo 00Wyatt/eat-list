@@ -1,28 +1,45 @@
-import { useState, useCallback } from "react";
-import { deleteDoc, doc, setDoc } from "firebase/firestore";
+import { useState, useCallback, useEffect } from "react";
+import { deleteDoc, doc, setDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../../firebase";
-import { useDoc } from "./useDoc";
 import type { Ingredient, Meal, ShoppingListItem, WeeklyMeals } from "@/types";
 
 export function useShoppingList() {
   const [shoppingList, setShoppingList] = useState<ShoppingListItem[] | null>(
     null,
   );
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const fetchShoppingList = useCallback(async () => {
+  useEffect(() => {
     setLoading(true);
-    const data = await useDoc("shoppingList", "current");
-    const items =
-      data && Array.isArray(data.items)
-        ? data.items.map((item: ShoppingListItem) => ({
-            ...item,
-            category: item.category ?? null,
-          }))
-        : null;
-    setShoppingList(items ?? null);
-    setLoading(false);
-    return items ?? null;
+    const unsubscribe = onSnapshot(
+      doc(db, "shoppingList", "current"),
+      (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+          const items =
+            data && Array.isArray(data.items)
+              ? data.items.map((item: ShoppingListItem) => ({
+                  ...item,
+                  category: item.category ?? null,
+                }))
+              : null;
+          setShoppingList(items ?? null);
+        } else {
+          setShoppingList(null);
+        }
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error listening to shopping list:", error);
+        setLoading(false);
+      },
+    );
+    return () => unsubscribe();
+  }, []);
+
+  // Keep this for backward compatibility, but it's a no-op now
+  const fetchShoppingList = useCallback(() => {
+    // Real-time listener handles fetching automatically
   }, []);
 
   const createShoppingList = useCallback(
@@ -47,7 +64,6 @@ export function useShoppingList() {
       await setDoc(doc(db, "shoppingList", "current"), {
         items: finalList,
       });
-      setShoppingList(finalList);
       return finalList;
     },
     [],
@@ -56,7 +72,6 @@ export function useShoppingList() {
   const clearShoppingList = useCallback(async () => {
     try {
       await deleteDoc(doc(db, "shoppingList", "current"));
-      setShoppingList(null);
     } catch (error) {
       console.error(error);
     }
@@ -66,7 +81,6 @@ export function useShoppingList() {
     async (name: string, revert: () => void) => {
       if (!shoppingList) return;
       const updatedList = shoppingList.filter((item) => item.name !== name);
-      setShoppingList(updatedList);
       try {
         await setDoc(doc(db, "shoppingList", "current"), {
           items: updatedList,
@@ -82,7 +96,6 @@ export function useShoppingList() {
     async (item: ShoppingListItem, revert: () => void) => {
       const currentList = shoppingList ?? [];
       const updatedList = currentList.concat([item]);
-      setShoppingList(updatedList);
       try {
         await setDoc(doc(db, "shoppingList", "current"), {
           items: updatedList,
@@ -101,7 +114,6 @@ export function useShoppingList() {
         item.name === name ? { ...item, checked: !item.checked } : item,
       );
       await setDoc(doc(db, "shoppingList", "current"), { items: updatedList });
-      setShoppingList(updatedList);
     },
     [shoppingList],
   );
@@ -110,21 +122,17 @@ export function useShoppingList() {
     async (name: string, delta: number) => {
       if (!shoppingList) return;
 
-      const previousList = shoppingList;
       const updatedList = shoppingList.map((item) => {
         if (item.name !== name) return item;
         const nextQuantityRounded = Math.max(1, item.quantityRounded + delta);
         return { ...item, quantityRounded: nextQuantityRounded };
       });
 
-      setShoppingList(updatedList);
-
       try {
         await setDoc(doc(db, "shoppingList", "current"), {
           items: updatedList,
         });
       } catch (error) {
-        setShoppingList(previousList);
         throw error;
       }
     },
@@ -152,19 +160,15 @@ export function useShoppingList() {
         throw new Error("An item with that name already exists");
       }
 
-      const previousList = shoppingList;
       const updatedList = shoppingList.map((item) =>
         item.name === currentName ? { ...item, name: nextTrimmed } : item,
       );
-
-      setShoppingList(updatedList);
 
       try {
         await setDoc(doc(db, "shoppingList", "current"), {
           items: updatedList,
         });
       } catch (error) {
-        setShoppingList(previousList);
         throw error;
       }
     },
