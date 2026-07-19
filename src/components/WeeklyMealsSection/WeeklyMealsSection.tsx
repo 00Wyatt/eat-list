@@ -66,6 +66,7 @@ export const WeeklyMealsSection = () => {
                           ))}
                         </ul>
                       }
+                      triggerStyles="text-start"
                     />
                   ) : (
                     <>
