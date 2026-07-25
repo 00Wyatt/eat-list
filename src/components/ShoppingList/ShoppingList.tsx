@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Separator } from "radix-ui";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import type { ShoppingListItem } from "@/types";
 import { useShoppingList } from "@/hooks/useShoppingList";
@@ -106,9 +107,10 @@ export const ShoppingList = () => {
           <Button size="large" onClick={() => setShowInput(true)}>
             <LuPlus /> Add Item
           </Button>
+          <Separator.Root className="my-1 w-12 h-[1px] mx-auto bg-gray-300" />
           <ConfirmationDialog
             trigger={
-              <Button color="danger">
+              <Button size="large" color="danger">
                 <LuTrash2 /> Clear List
               </Button>
             }

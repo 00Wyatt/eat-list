@@ -5,13 +5,20 @@ type ModalProps = {
   triggerText?: string;
   title?: string;
   description?: string | React.ReactNode;
+  triggerStyles?: string;
 };
 
-export const Modal = ({ triggerText, title, description }: ModalProps) => {
+export const Modal = ({
+  triggerText,
+  title,
+  description,
+  triggerStyles,
+}: ModalProps) => {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="font-medium underline decoration-gray-400 underline-offset-4">
+        <button
+          className={`font-medium underline decoration-gray-400 underline-offset-4 ${triggerStyles}`}>
           {triggerText}
         </button>
       </Dialog.Trigger>

@@ -105,7 +105,7 @@ npm run import:meals -- --file path/to/meals.csv --dry-run
 Real import (production requires confirmation):
 
 ```bash
-npm run import:meals -- --file path/to/meals.csv --confirm-production
+npm run import:meals -- --file path/to/meals.csv --project eat-list-prod --confirm-production
 ```
 
 Optional: choose a different collection:

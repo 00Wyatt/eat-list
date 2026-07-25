@@ -28,7 +28,7 @@ export const FormSelect = ({
       <select
         id={id}
         {...(register ?? {})}
-        className="rounded border border-gray-300 p-2">
+        className="min-w-0 truncate rounded border border-gray-300 p-2">
         {placeholder && (
           <option value="" className="text-gray-700">
             {placeholder}
