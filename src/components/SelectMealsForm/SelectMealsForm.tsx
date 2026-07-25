@@ -25,6 +25,9 @@ const schema = z.object({
 export type SelectMealsFormData = z.infer<typeof schema>;
 
 export const SelectMealsForm = () => {
+  const [customMeals, setCustomMeals] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -43,9 +46,6 @@ export const SelectMealsForm = () => {
   const { createWeeklyMeals, storeStartingDay } = useWeeklyMeals();
   const { shoppingList, createShoppingList } = useShoppingList();
 
-  const [customMeals, setCustomMeals] = useState<Record<string, string>>({});
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
   useEffect(() => {
     fetchMeals();
   }, []);
@@ -55,6 +55,7 @@ export const SelectMealsForm = () => {
   };
 
   const onSubmit = async (data: SelectMealsFormData) => {
+    setLoading(true);
     clearErrors("root");
 
     const weeklyMeals = Object.fromEntries(
@@ -78,6 +79,7 @@ export const SelectMealsForm = () => {
         type: "manual",
         message: "Please select at least one meal",
       });
+      setLoading(false);
       return;
     }
 
@@ -85,17 +87,13 @@ export const SelectMealsForm = () => {
       const weeklyMealsList = await createWeeklyMeals(weeklyMeals);
       await storeStartingDay({ day: data.startingDay || "Monday" });
 
-      setSuccessMessage("Meals selected successfully!");
-
       await createShoppingList(
         weeklyMealsList,
         meals,
         shoppingList,
         data.keepCurrentList,
       );
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
+      navigate("/");
     } catch (error) {
       setError("root", {
         type: "manual",
@@ -104,6 +102,8 @@ export const SelectMealsForm = () => {
             ? error.message
             : "Failed to create weekly meals",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -163,18 +163,13 @@ export const SelectMealsForm = () => {
         />
         Keep existing shopping list items?
       </label>
-      <Button type="submit" size="large" className="mt-1">
+      <Button type="submit" size="large" loading={loading} className="mt-1">
         <LuSparkles /> Create List
       </Button>
       {errors.root && (
         <p className="mb-2 text-red-600">
           {errors.root?.message && errors.root.message}
         </p>
-      )}
-      {successMessage && (
-        <>
-          <p className="mb-2 text-green-600">{successMessage}</p>
-        </>
       )}
     </form>
   );
