@@ -50,7 +50,7 @@ export const ShoppingListAddItem = ({
         className="my-[1px] flex-1 rounded border border-gray-300 px-2 py-1.5"
         placeholder="Enter a value"
       />
-      <Button type="submit" className="px-4">
+      <Button size="large" type="submit" className="px-4">
         Add
       </Button>
       {errors.item && (
