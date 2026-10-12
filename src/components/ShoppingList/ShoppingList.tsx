@@ -8,6 +8,7 @@ import { ConfirmationDialog } from "../common/ConfirmationDialog";
 import { Button } from "../common/Button";
 import { ShoppingListAddItem } from "./components/ShoppingListAddItem";
 import { ShoppingListSkeleton } from "./components/ShoppingListSkeleton";
+import { ShoppingListNote } from "./components/ShoppingListNote";
 
 export const ShoppingList = () => {
   const [showInput, setShowInput] = useState(false);
@@ -20,6 +21,8 @@ export const ShoppingList = () => {
     toggleChecked,
     changeQuantityRounded,
     renameShoppingListItem,
+    note,
+    updateNote,
     loading,
   } = useShoppingList();
 
@@ -107,7 +110,7 @@ export const ShoppingList = () => {
           <Button size="large" onClick={() => setShowInput(true)}>
             <LuPlus /> Add Item
           </Button>
-          <Separator.Root className="my-1 w-12 h-[1px] mx-auto bg-gray-300" />
+          <Separator.Root className="mx-auto my-1 h-[1px] w-12 bg-gray-300" />
           <ConfirmationDialog
             trigger={
               <Button size="large" color="danger">
@@ -120,6 +123,7 @@ export const ShoppingList = () => {
           />
         </div>
       )}
+      <ShoppingListNote note={note} updateNote={updateNote} />
     </div>
   );
 };

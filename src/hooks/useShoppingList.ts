@@ -7,6 +7,7 @@ export function useShoppingList() {
   const [shoppingList, setShoppingList] = useState<ShoppingListItem[] | null>(
     null,
   );
+  const [note, setNote] = useState("");
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -16,6 +17,7 @@ export function useShoppingList() {
       (snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.data();
+          setNote(typeof data.note === "string" ? data.note : "");
           const items =
             data && Array.isArray(data.items)
               ? data.items.map((item: ShoppingListItem) => ({
@@ -26,6 +28,7 @@ export function useShoppingList() {
           setShoppingList(items ?? null);
         } else {
           setShoppingList(null);
+          setNote("");
         }
         setLoading(false);
       },
@@ -41,7 +44,6 @@ export function useShoppingList() {
     async (
       weeklyMealList: WeeklyMeals | null,
       mealsList: Meal[] | null,
-      currentShoppingList: ShoppingListItem[] | null,
       keepCurrentList: boolean,
     ) => {
       if (!weeklyMealList || !mealsList) return [];
@@ -52,16 +54,23 @@ export function useShoppingList() {
       );
 
       const finalList =
-        keepCurrentList && Array.isArray(currentShoppingList)
-          ? mergeShoppingLists(newItems, currentShoppingList)
+        keepCurrentList && Array.isArray(shoppingList)
+          ? mergeShoppingLists(newItems, shoppingList)
           : newItems;
 
-      await setDoc(doc(db, "shoppingList", "current"), {
-        items: finalList,
-      });
+      const noteText = keepCurrentList ? note : "";
+
+      await setDoc(
+        doc(db, "shoppingList", "current"),
+        {
+          items: finalList,
+          note: noteText,
+        },
+        { merge: true },
+      );
       return finalList;
     },
-    [],
+    [shoppingList, note],
   );
 
   const clearShoppingList = useCallback(async () => {
@@ -77,9 +86,13 @@ export function useShoppingList() {
       if (!shoppingList) return;
       const updatedList = shoppingList.filter((item) => item.name !== name);
       try {
-        await setDoc(doc(db, "shoppingList", "current"), {
-          items: updatedList,
-        });
+        await setDoc(
+          doc(db, "shoppingList", "current"),
+          {
+            items: updatedList,
+          },
+          { merge: true },
+        );
       } catch {
         revert();
       }
@@ -92,9 +105,13 @@ export function useShoppingList() {
       const currentList = shoppingList ?? [];
       const updatedList = currentList.concat([item]);
       try {
-        await setDoc(doc(db, "shoppingList", "current"), {
-          items: updatedList,
-        });
+        await setDoc(
+          doc(db, "shoppingList", "current"),
+          {
+            items: updatedList,
+          },
+          { merge: true },
+        );
       } catch {
         revert();
       }
@@ -108,7 +125,11 @@ export function useShoppingList() {
       const updatedList = shoppingList.map((item) =>
         item.name === name ? { ...item, checked: !item.checked } : item,
       );
-      await setDoc(doc(db, "shoppingList", "current"), { items: updatedList });
+      await setDoc(
+        doc(db, "shoppingList", "current"),
+        { items: updatedList },
+        { merge: true },
+      );
     },
     [shoppingList],
   );
@@ -123,13 +144,11 @@ export function useShoppingList() {
         return { ...item, quantityRounded: nextQuantityRounded };
       });
 
-      try {
-        await setDoc(doc(db, "shoppingList", "current"), {
-          items: updatedList,
-        });
-      } catch (error) {
-        throw error;
-      }
+      await setDoc(
+        doc(db, "shoppingList", "current"),
+        { items: updatedList },
+        { merge: true },
+      );
     },
     [shoppingList],
   );
@@ -159,19 +178,31 @@ export function useShoppingList() {
         item.name === currentName ? { ...item, name: nextTrimmed } : item,
       );
 
-      try {
-        await setDoc(doc(db, "shoppingList", "current"), {
-          items: updatedList,
-        });
-      } catch (error) {
-        throw error;
-      }
+      await setDoc(
+        doc(db, "shoppingList", "current"),
+        { items: updatedList },
+        { merge: true },
+      );
     },
     [shoppingList],
   );
 
+  const updateNote = useCallback(async (nextNote: string) => {
+    setNote(nextNote);
+    try {
+      await setDoc(
+        doc(db, "shoppingList", "current"),
+        { note: nextNote },
+        { merge: true },
+      );
+    } catch (error) {
+      console.error("Error updating shopping list note:", error);
+    }
+  }, []);
+
   return {
     shoppingList,
+    note,
     createShoppingList,
     clearShoppingList,
     removeShoppingListItem,
@@ -179,6 +210,7 @@ export function useShoppingList() {
     toggleChecked,
     changeQuantityRounded,
     renameShoppingListItem,
+    updateNote,
     loading,
   };
 }
