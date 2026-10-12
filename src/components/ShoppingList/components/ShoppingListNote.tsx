@@ -1,4 +1,5 @@
 import { Button } from "@/components/common/Button";
+import { ConfirmationDialog } from "@/components/common/ConfirmationDialog";
 import { useEffect, useState } from "react";
 import { LuPencil, LuTrash2 } from "react-icons/lu";
 
@@ -21,7 +22,9 @@ export const ShoppingListNote = ({
 
   return (
     <form className="flex w-full flex-col gap-2">
-      <label htmlFor="shoppingListNote" className="flex flex-col gap-2 text-xs font-medium tracking-wider text-gray-700 uppercase">
+      <label
+        htmlFor="shoppingListNote"
+        className="flex flex-col gap-2 text-xs font-medium tracking-wider text-gray-700 uppercase">
         Note
       </label>
       {showNote ? (
@@ -34,16 +37,19 @@ export const ShoppingListNote = ({
             value={note}
             onChange={(event) => void updateNote(event.currentTarget.value)}
           />
-          <Button
-            color="neutral"
-            size="large"
-            className="w-full"
-            onClick={() => {
+          <ConfirmationDialog
+            trigger={
+              <Button color="neutral" size="large">
+                <LuTrash2 /> Clear Note
+              </Button>
+            }
+            title="Clear Note?"
+            description="Are you sure you want to clear the note?"
+            onConfirm={() => {
               updateNote("");
               setShowNote(false);
-            }}>
-            <LuTrash2 /> Clear Note
-          </Button>
+            }}
+          />
         </>
       ) : (
         <Button
