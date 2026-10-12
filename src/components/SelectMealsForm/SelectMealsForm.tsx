@@ -44,7 +44,7 @@ export const SelectMealsForm = () => {
 
   const { meals, fetchMeals } = useMeals();
   const { createWeeklyMeals, storeStartingDay } = useWeeklyMeals();
-  const { shoppingList, createShoppingList } = useShoppingList();
+  const { createShoppingList } = useShoppingList();
 
   useEffect(() => {
     fetchMeals();
@@ -87,12 +87,7 @@ export const SelectMealsForm = () => {
       const weeklyMealsList = await createWeeklyMeals(weeklyMeals);
       await storeStartingDay({ day: data.startingDay || "Monday" });
 
-      await createShoppingList(
-        weeklyMealsList,
-        meals,
-        shoppingList,
-        data.keepCurrentList,
-      );
+      await createShoppingList(weeklyMealsList, meals, data.keepCurrentList);
       navigate("/");
     } catch (error) {
       setError("root", {
