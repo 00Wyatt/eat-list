@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { LuPencil, LuPlus } from "react-icons/lu";
 import { useMeals } from "@/hooks";
 import type { Meal } from "@/types";
+import { CreateOrUpdateMealSkeleton } from "./components/CreateOrUpdateMealSkeleton";
 
 export const CreateOrUpdateMeal = () => {
   const { fetchMeals } = useMeals();
@@ -23,7 +24,6 @@ export const CreateOrUpdateMeal = () => {
       } finally {
         if (isCurrent) setLoading(false);
       }
-
     };
 
     void loadMeals();
@@ -33,6 +33,10 @@ export const CreateOrUpdateMeal = () => {
   }, [fetchMeals]);
 
   const selectedMeal = meals?.find((meal) => meal.id === selectedMealId);
+
+  if (loading) {
+    return <CreateOrUpdateMealSkeleton />;
+  }
 
   return (
     <section className="flex flex-col gap-3">
@@ -55,16 +59,14 @@ export const CreateOrUpdateMeal = () => {
           id="meal-to-update"
           value={selectedMealId}
           onChange={(event) => setSelectedMealId(event.target.value)}
-          disabled={loading || !meals?.length}
+          disabled={!meals?.length}
           className="w-full rounded border border-gray-300 bg-white p-2 disabled:cursor-not-allowed disabled:bg-gray-100">
           <option value="">
-            {loading
-              ? "Loading meals…"
-              : meals == null
-                ? "Unable to load meals"
-                : meals.length === 0
-                  ? "No meals available"
-                  : "Select a meal"}
+            {meals == null
+              ? "Unable to load meals"
+              : meals.length === 0
+                ? "No meals available"
+                : "Select a meal"}
           </option>
           {meals?.map((meal) => (
             <option key={meal.id} value={meal.id}>
