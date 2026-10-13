@@ -230,16 +230,23 @@ export const WeeklyMealsSection = () => {
                         triggerText={meal.name}
                         title={meal.name}
                         description={
-                          <ul>
-                            {meal.ingredients.map((ingredient) => (
-                              <li key={ingredient.name}>
-                                {ingredient.name}{" "}
-                                <span className="text-sm text-gray-600">
-                                  ({ingredient.quantity} x {ingredient.unit})
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
+                          <div className="flex flex-col gap-3">
+                            <ul>
+                              {meal.ingredients.map((ingredient) => (
+                                <li key={ingredient.name}>
+                                  {ingredient.name}{" "}
+                                  <span className="text-sm text-gray-600">
+                                    ({ingredient.quantity} x {ingredient.unit})
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                            <Link
+                              to={`/meals/${meal.id}/edit`}
+                              className="flex items-center justify-center gap-1 self-start rounded bg-sky-100 px-3 py-1.5 text-sm font-normal text-sky-600">
+                              <LuPencil /> Edit Meal
+                            </Link>
+                          </div>
                         }
                         triggerStyles="text-start"
                       />
@@ -261,7 +268,7 @@ export const WeeklyMealsSection = () => {
                   size="large"
                   className="w-full"
                   onClick={handleSave}>
-                  Save
+                  Save Changes
                 </Button>
 
                 <Button

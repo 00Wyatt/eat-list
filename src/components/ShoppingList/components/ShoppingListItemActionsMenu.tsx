@@ -37,7 +37,7 @@ export const ShoppingListItemActionsMenu = ({
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
-          className="z-50 flex w-48 flex-col gap-2 rounded-lg border border-gray-100 bg-white p-2.5 text-gray-900 shadow-lg"
+          className="z-50 flex w-48 flex-col gap-3 rounded-lg border border-gray-100 bg-white p-3 text-gray-900 shadow-lg"
           sideOffset={8}
           align="end"
           onOpenAutoFocus={(e) => e.preventDefault()}
@@ -97,13 +97,13 @@ export const ShoppingListItemActionsMenu = ({
           ) : (
             <button
               type="button"
-              className="flex w-full items-center justify-center gap-2 rounded bg-gray-100 px-2 py-1 text-sm font-medium text-gray-800"
+              className="flex w-full items-center justify-center gap-1 rounded bg-gray-100 px-2 py-1.5 text-sm font-medium text-gray-800"
               onClick={(e) => {
                 e.stopPropagation();
                 setEditingName(true);
               }}>
               <LuPencil />
-              Edit item name
+              Edit Item Name
             </button>
           )}
         </Popover.Content>

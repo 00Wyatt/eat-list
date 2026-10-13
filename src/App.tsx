@@ -5,6 +5,8 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { Home } from "./pages/Home";
 import { SelectMeals } from "./pages/SelectMeals";
 import { Layout } from "./components/Layout";
+import { UpdateMeal } from "./pages/UpdateMeal";
+import { CreateMeal } from "./pages/CreateMeal";
 
 const appTitle = "Eat List";
 
@@ -37,6 +39,22 @@ export default function App() {
                 element={
                   <ProtectedRoute>
                     <SelectMeals />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/meals/:mealId/edit"
+                element={
+                  <ProtectedRoute>
+                    <UpdateMeal />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/meals/create"
+                element={
+                  <ProtectedRoute>
+                    <CreateMeal />
                   </ProtectedRoute>
                 }
               />
