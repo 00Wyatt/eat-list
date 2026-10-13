@@ -5,7 +5,7 @@ import type { ShoppingListItem } from "@/types";
 import { useShoppingList } from "@/hooks/useShoppingList";
 import { ShoppingListItemComponent } from "./components/ShoppingListItemComponent";
 import { ConfirmationDialog } from "../common/ConfirmationDialog";
-import { Button } from "../common/Button";
+import { Button } from "../common/Buttons/Button";
 import { ShoppingListAddItem } from "./components/ShoppingListAddItem";
 import { ShoppingListSkeleton } from "./components/ShoppingListSkeleton";
 import { ShoppingListNote } from "./components/ShoppingListNote";

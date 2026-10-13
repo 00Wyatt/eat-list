@@ -1,4 +1,4 @@
-import { Button } from "@/components/common/Button";
+import { Button } from "@/components/common/Buttons/Button";
 import { ConfirmationDialog } from "@/components/common/ConfirmationDialog";
 import { useEffect, useState } from "react";
 import { LuPencil, LuTrash2 } from "react-icons/lu";

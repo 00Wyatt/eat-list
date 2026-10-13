@@ -4,7 +4,7 @@ import { Separator } from "radix-ui";
 import { LuCalendarPlus, LuPencil, LuTrash2 } from "react-icons/lu";
 import { Modal } from "../Modal";
 import { ConfirmationDialog } from "../common/ConfirmationDialog";
-import { Button } from "../common/Button";
+import { Button } from "../common/Buttons/Button";
 import { sortDays, WEEK_DAYS } from "@/utils/helpers";
 import { useMeals, useWeeklyMeals } from "@/hooks";
 import { WeeklyMealsSectionSkeleton } from "./components/WeeklyMealsSectionSkeleton";

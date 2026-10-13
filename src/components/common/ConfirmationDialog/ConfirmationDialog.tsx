@@ -1,6 +1,6 @@
 import { Dialog } from "radix-ui";
 import { LuX } from "react-icons/lu";
-import { Button } from "../Button";
+import { Button } from "../Buttons/Button";
 
 type ConfirmationDialogProps = {
   trigger: React.ReactNode;

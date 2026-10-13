@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/common/Button";
+import { Button } from "@/components/common/Buttons/Button";
 import { parseShoppingListInput } from "../helpers/parseShoppingListInput";
 import type { ShoppingListItem } from "@/types";
 

@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/common/Button";
+import { Button } from "@/components/common/Buttons/Button";
 
 const schema = z.object({
   email: z.email("Invalid email address"),

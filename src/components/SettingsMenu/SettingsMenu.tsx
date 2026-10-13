@@ -1,7 +1,7 @@
 import { Popover } from "radix-ui";
 import { LuSettings } from "react-icons/lu";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "../common/Button";
+import { Button } from "../common/Buttons/Button";
 
 export const SettingsMenu = () => {
   const { user, logout } = useAuth();

@@ -1,7 +1,7 @@
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
-import { Button } from "@/components/common/Button";
+import { Button } from "@/components/common/Buttons/Button";
 import {
   MEAL_CATEGORIES,
   mealFormSchema,
