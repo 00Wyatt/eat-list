@@ -1,7 +1,10 @@
-import { useFieldArray, useForm } from "react-hook-form";
+import { useState } from "react";
+import { CgSpinner } from "react-icons/cg";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { Button } from "@/components/common/Buttons/Button";
+import { useIngredientSuggestions } from "@/hooks";
 import {
   MEAL_CATEGORIES,
   mealFormSchema,
@@ -36,6 +39,7 @@ export const MealForm = ({
     control,
     handleSubmit,
     setError,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<MealFormValues>({
     resolver: zodResolver(mealFormSchema),
@@ -45,6 +49,19 @@ export const MealForm = ({
     control,
     name: "ingredients",
   });
+  const ingredientValues = useWatch({ control, name: "ingredients" });
+  const [activeIngredientIndex, setActiveIngredientIndex] = useState<
+    number | null
+  >(null);
+  const activeIngredientName =
+    activeIngredientIndex === null
+      ? ""
+      : (ingredientValues[activeIngredientIndex]?.name ?? "");
+  const {
+    suggestions,
+    loading: suggestionsLoading,
+    error: suggestionsError,
+  } = useIngredientSuggestions(activeIngredientName);
 
   const submit = async (values: MealFormValues) => {
     try {
@@ -61,7 +78,14 @@ export const MealForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-4">
+    <form
+      onSubmit={handleSubmit(submit)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" && event.target instanceof HTMLInputElement) {
+          event.preventDefault();
+        }
+      }}
+      className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
         <label
           htmlFor="meal-name"
@@ -94,13 +118,114 @@ export const MealForm = ({
                 <label htmlFor={`ingredient-${index}`} className="sr-only">
                   Ingredient {index + 1}
                 </label>
-                <input
-                  id={`ingredient-${index}`}
-                  {...register(`ingredients.${index}.name`)}
-                  placeholder="Ingredient"
-                  className="w-full rounded border border-gray-300 px-2 py-1.5"
-                  autoComplete="off"
-                />
+                <div className="relative">
+                  {(() => {
+                    const ingredientInput = register(
+                      `ingredients.${index}.name`,
+                    );
+                    const showSuggestions =
+                      activeIngredientIndex === index &&
+                      activeIngredientName.trim().length > 0;
+
+                    return (
+                      <>
+                        <input
+                          id={`ingredient-${index}`}
+                          {...ingredientInput}
+                          onFocus={() => setActiveIngredientIndex(index)}
+                          onBlur={(event) => {
+                            ingredientInput.onBlur(event);
+                            setActiveIngredientIndex((current) =>
+                              current === index ? null : current,
+                            );
+                          }}
+                          placeholder="Ingredient"
+                          className="w-full rounded border border-gray-300 px-2 py-1.5"
+                          autoComplete="off"
+                          role="combobox"
+                          aria-autocomplete="list"
+                          aria-expanded={showSuggestions}
+                          aria-controls={`ingredient-suggestions-${index}`}
+                        />
+                        {showSuggestions && (
+                          <div
+                            id={`ingredient-suggestions-${index}`}
+                            role="listbox"
+                            aria-label="Ingredient suggestions"
+                            className="absolute top-full left-0 z-20 mt-1 max-h-56 w-full overflow-y-auto rounded border border-gray-300 bg-white py-1 shadow-lg">
+                            {suggestionsLoading ? (
+                              <p
+                                role="status"
+                                className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600">
+                                <CgSpinner
+                                  aria-hidden="true"
+                                  className="animate-spin"
+                                />
+                                Searching meals…
+                              </p>
+                            ) : suggestionsError ? (
+                              <p
+                                role="alert"
+                                className="px-3 py-2 text-sm text-red-600">
+                                {suggestionsError}
+                              </p>
+                            ) : suggestions.length > 0 ? (
+                              suggestions.map((suggestion) => (
+                                <button
+                                  key={suggestion.name.toLowerCase()}
+                                  type="button"
+                                  role="option"
+                                  aria-selected="false"
+                                  className="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                                  onMouseDown={(event) =>
+                                    event.preventDefault()
+                                  }
+                                  onClick={() => {
+                                    setValue(
+                                      `ingredients.${index}.name`,
+                                      suggestion.name,
+                                      { shouldDirty: true },
+                                    );
+                                    setValue(
+                                      `ingredients.${index}.quantity`,
+                                      suggestion.quantity,
+                                      { shouldDirty: true },
+                                    );
+                                    setValue(
+                                      `ingredients.${index}.unit`,
+                                      suggestion.unit,
+                                      { shouldDirty: true },
+                                    );
+                                    setValue(
+                                      `ingredients.${index}.category`,
+                                      MEAL_CATEGORIES.find(
+                                        (category) =>
+                                          category === suggestion.category,
+                                      ) ?? "",
+                                      { shouldDirty: true },
+                                    );
+                                    setActiveIngredientIndex(null);
+                                  }}>
+                                  <span>{suggestion.name}</span>
+                                  <span className="ml-3 text-xs text-gray-500">
+                                    {suggestion.mealCount}{" "}
+                                    {suggestion.mealCount === 1
+                                      ? "meal"
+                                      : "meals"}
+                                  </span>
+                                </button>
+                              ))
+                            ) : (
+                              <p className="px-3 py-2 text-sm text-gray-600">
+                                No matching ingredients
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()}
+                </div>
                 {errors.ingredients?.[index]?.name && (
                   <p role="alert" className="mt-1 text-xs text-red-600">
                     {errors.ingredients[index]?.name?.message}
@@ -177,9 +302,7 @@ export const MealForm = ({
             {errors.ingredients.message}
           </p>
         )}
-        <Button
-          color="neutral"
-          onClick={() => append(emptyIngredient)}>
+        <Button color="neutral" onClick={() => append(emptyIngredient)}>
           <LuPlus aria-hidden="true" /> Add Ingredient
         </Button>
       </fieldset>
