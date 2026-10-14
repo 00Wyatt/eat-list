@@ -39,7 +39,7 @@ export const ShoppingListNote = ({
           />
           <ConfirmationDialog
             trigger={
-              <Button color="neutral" size="large">
+              <Button color="neutral">
                 <LuTrash2 /> Clear Note
               </Button>
             }
@@ -54,7 +54,6 @@ export const ShoppingListNote = ({
       ) : (
         <Button
           color="neutral"
-          size="large"
           className="w-full"
           onClick={() => setShowNote(true)}>
           <LuPencil /> Add Note

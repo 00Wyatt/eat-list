@@ -15,7 +15,7 @@ export const colorClasses = {
 };
 
 export const sizeClasses = {
-  small: "px-2 py-1",
+  small: "px-2 py-1 text-sm",
   large: "px-4 py-2",
 };
 

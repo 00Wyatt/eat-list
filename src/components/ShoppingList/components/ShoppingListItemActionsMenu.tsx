@@ -3,6 +3,7 @@ import { Popover } from "radix-ui";
 import { LuEllipsisVertical, LuMinus, LuPencil, LuPlus } from "react-icons/lu";
 import type { ShoppingListItem } from "@/types";
 import { ShoppingListEditItemName } from "./ShoppingListEditItemName";
+import { Button } from "@/components/common/Buttons/Button";
 
 type ShoppingListItemActionsMenuProps = {
   shoppingListItem: ShoppingListItem;
@@ -27,13 +28,13 @@ export const ShoppingListItemActionsMenu = ({
         if (!nextOpen) setEditingName(false);
       }}>
       <Popover.Trigger asChild>
-        <button
-          type="button"
-          className="ml-auto rounded p-1 text-xl text-sky-900"
+        <Button
+          variant="ghost"
+          className="ml-auto p-1 text-xl text-sky-900"
           aria-label={`Item actions for ${shoppingListItem.name}`}
           onClick={(e) => e.stopPropagation()}>
           <LuEllipsisVertical />
-        </button>
+        </Button>
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content
@@ -43,9 +44,8 @@ export const ShoppingListItemActionsMenu = ({
           onOpenAutoFocus={(e) => e.preventDefault()}
           onClick={(e) => e.stopPropagation()}>
           <div className="flex items-center justify-between gap-2">
-            <button
-              type="button"
-              className="flex h-8 w-8 items-center justify-center rounded bg-sky-50 text-sky-900 disabled:cursor-not-allowed disabled:opacity-60"
+            <Button
+              className="h-8 w-8 bg-sky-50 text-sky-900"
               aria-label="Decrease quantity"
               disabled={
                 quantityUpdating || shoppingListItem.quantityRounded <= 1
@@ -60,13 +60,12 @@ export const ShoppingListItemActionsMenu = ({
                 }
               }}>
               <LuMinus />
-            </button>
+            </Button>
             <div className="flex flex-1 items-center justify-center text-sm font-medium">
               Qty: {shoppingListItem.quantityRounded}
             </div>
-            <button
-              type="button"
-              className="flex h-8 w-8 items-center justify-center rounded bg-sky-50 text-sky-900 disabled:cursor-not-allowed disabled:opacity-60"
+            <Button
+              className="h-8 w-8 bg-sky-50 text-sky-900"
               aria-label="Increase quantity"
               disabled={quantityUpdating}
               onClick={async (e) => {
@@ -79,7 +78,7 @@ export const ShoppingListItemActionsMenu = ({
                 }
               }}>
               <LuPlus />
-            </button>
+            </Button>
           </div>
           {editingName ? (
             <ShoppingListEditItemName
@@ -95,16 +94,17 @@ export const ShoppingListItemActionsMenu = ({
               }}
             />
           ) : (
-            <button
-              type="button"
-              className="flex w-full items-center justify-center gap-1 rounded bg-gray-100 px-2 py-1.5 text-sm font-medium text-gray-800"
+            <Button
+              color="neutral"
+              size="small"
+              className="w-full px-2 py-1.5"
               onClick={(e) => {
                 e.stopPropagation();
                 setEditingName(true);
               }}>
               <LuPencil />
               Edit Item Name
-            </button>
+            </Button>
           )}
         </Popover.Content>
       </Popover.Portal>

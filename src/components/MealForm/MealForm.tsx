@@ -130,13 +130,13 @@ export const MealForm = ({
                 )}
               </div>
             </div>
-            <button
-              type="button"
+            <Button
+              variant="ghost"
               onClick={() => remove(index)}
               aria-label={`Remove ingredient ${index + 1}`}
               className="row-span-2 p-2 text-red-600">
               <LuTrash2 aria-hidden="true" />
-            </button>
+            </Button>
             <div className="grid min-w-0 grid-cols-2 gap-2">
               <div className="min-w-0">
                 <label htmlFor={`ingredient-unit-${index}`} className="sr-only">
@@ -177,7 +177,6 @@ export const MealForm = ({
           </p>
         )}
         <Button
-          type="button"
           color="neutral"
           onClick={() => append(emptyIngredient)}>
           <LuPlus aria-hidden="true" /> Add Ingredient
@@ -190,10 +189,10 @@ export const MealForm = ({
         </p>
       )}
       <div className="flex flex-col gap-2">
-        <Button type="submit" size="large" loading={loading || isSubmitting}>
+        <Button type="submit" loading={loading || isSubmitting}>
           {submitLabel}
         </Button>
-        <Button type="button" color="neutral" size="large" onClick={onCancel}>
+        <Button color="neutral" onClick={onCancel}>
           Cancel
         </Button>
       </div>

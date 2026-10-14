@@ -11,7 +11,7 @@ export const SelectMeals = () => {
       </h2>
       <SelectMealsForm />
       <Link to="/">
-        <Button size="large" color="neutral" className="w-full">
+        <Button color="neutral" className="w-full">
           <LuArrowLeft /> Home
         </Button>
       </Link>

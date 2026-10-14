@@ -263,18 +263,14 @@ export const WeeklyMealsSection = () => {
             {isEditing ? (
               <>
                 <Button
-                  type="button"
                   color="primary"
-                  size="large"
                   className="w-full"
                   onClick={handleSave}>
                   Save Changes
                 </Button>
 
                 <Button
-                  type="button"
                   color="neutral"
-                  size="large"
                   className="w-full"
                   onClick={handleEditCancel}>
                   Cancel
@@ -283,14 +279,13 @@ export const WeeklyMealsSection = () => {
             ) : (
               <>
                 <Link to="/select-meals">
-                  <Button size="large" className="w-full">
+                  <Button className="w-full">
                     <LuCalendarPlus /> Select Meals
                   </Button>
                 </Link>
 
                 <Button
                   color="neutral"
-                  size="large"
                   className="w-full"
                   onClick={handleEditStart}>
                   <LuPencil /> Edit Meals
@@ -300,7 +295,7 @@ export const WeeklyMealsSection = () => {
 
                 <ConfirmationDialog
                   trigger={
-                    <Button color="danger" size="large">
+                    <Button color="danger">
                       <LuTrash2 /> Clear Meals
                     </Button>
                   }
@@ -314,7 +309,7 @@ export const WeeklyMealsSection = () => {
         </>
       ) : (
         <Link to="/select-meals">
-          <Button size="large" className="w-full">
+          <Button className="w-full">
             <LuCalendarPlus /> Select Meals
           </Button>
         </Link>

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/common/Buttons/Button";
 
 const schema = z.object({
   name: z
@@ -78,21 +79,19 @@ export const ShoppingListEditItemName = ({
       </div>
 
       <div className="flex gap-2">
-        <button
-          type="button"
-          className="flex-1 rounded bg-gray-100 px-2 py-1 text-sm font-medium text-gray-800"
+        <Button
+          color="neutral"
+          size="small"
+          className="flex-1"
           onClick={(e) => {
             e.stopPropagation();
             cancel();
           }}>
           Cancel
-        </button>
-        <button
-          type="submit"
-          className="flex-1 rounded bg-sky-100 px-2 py-1 text-sm font-medium text-sky-600 disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={isSubmitting}>
+        </Button>
+        <Button size="small" type="submit" className="flex-1" disabled={isSubmitting}>
           Save
-        </button>
+        </Button>
       </div>
     </form>
   );

@@ -25,6 +25,7 @@ export const Button = ({
 
   return (
     <button
+      type={props.type || "button"}
       disabled={variant === "disabled"}
       className={twMerge(
         "flex items-center justify-center gap-1 rounded duration-200",

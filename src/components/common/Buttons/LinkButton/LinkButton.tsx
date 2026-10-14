@@ -12,7 +12,7 @@ type LinkButtonProps = React.AnchorHTMLAttributes<HTMLAnchorElement> &
 
 export const LinkButton = ({
   color = "primary",
-  size = "small",
+  size = "large",
   variant = "solid",
   loading = false,
   className,

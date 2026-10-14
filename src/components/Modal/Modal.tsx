@@ -1,5 +1,6 @@
 import { Dialog } from "radix-ui";
 import { LuX } from "react-icons/lu";
+import { Button } from "../common/Buttons/Button";
 
 type ModalProps = {
   triggerText?: string;
@@ -17,10 +18,12 @@ export const Modal = ({
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button
-          className={`font-medium underline decoration-gray-400 underline-offset-4 ${triggerStyles}`}>
+        <Button
+          color="neutral"
+          variant="ghost"
+          className={`p-0 font-medium underline decoration-gray-400 underline-offset-4 ${triggerStyles}`}>
           {triggerText}
-        </button>
+        </Button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black opacity-40" />
@@ -32,9 +35,13 @@ export const Modal = ({
           <Dialog.Close
             asChild
             className="absolute top-4 right-4 cursor-pointer text-lg hover:text-gray-700">
-            <button aria-label="Close">
+            <Button
+              color="neutral"
+              variant="ghost"
+              aria-label="Close"
+              className="p-0">
               <LuX />
-            </button>
+            </Button>
           </Dialog.Close>
         </Dialog.Content>
       </Dialog.Portal>

@@ -158,7 +158,7 @@ export const SelectMealsForm = () => {
         />
         Keep existing shopping list items?
       </label>
-      <Button type="submit" size="large" loading={loading} className="mt-1">
+      <Button type="submit" loading={loading} className="mt-1">
         <LuSparkles /> Create List
       </Button>
       {errors.root && (

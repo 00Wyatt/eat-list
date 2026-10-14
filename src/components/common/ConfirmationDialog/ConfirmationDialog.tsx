@@ -29,12 +29,12 @@ export const ConfirmationDialog = ({
           </Dialog.Description>
           <div className="mt-6 flex justify-end gap-4">
             <Dialog.Close asChild>
-              <Button color="neutral" size="large" variant="ghost">
+              <Button color="neutral" variant="ghost">
                 Cancel
               </Button>
             </Dialog.Close>
             <Dialog.Close asChild>
-              <Button color="danger" size="large" onClick={onConfirm}>
+              <Button color="danger" onClick={onConfirm}>
                 Confirm
               </Button>
             </Dialog.Close>
@@ -42,9 +42,9 @@ export const ConfirmationDialog = ({
           <Dialog.Close
             asChild
             className="absolute top-4 right-4 cursor-pointer text-lg">
-            <button aria-label="Close">
+            <Button color="neutral" variant="ghost" aria-label="Close" className="p-0">
               <LuX />
-            </button>
+            </Button>
           </Dialog.Close>
         </Dialog.Content>
       </Dialog.Portal>

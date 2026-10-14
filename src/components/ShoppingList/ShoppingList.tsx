@@ -46,7 +46,7 @@ export const ShoppingList = () => {
             onCancel={() => setShowInput(false)}
           />
         ) : (
-          <Button size="large" onClick={() => setShowInput(true)}>
+          <Button onClick={() => setShowInput(true)}>
             <LuPlus /> New Shopping List
           </Button>
         )}
@@ -107,13 +107,13 @@ export const ShoppingList = () => {
         />
       ) : (
         <div className="flex flex-col gap-2">
-          <Button size="large" onClick={() => setShowInput(true)}>
+          <Button onClick={() => setShowInput(true)}>
             <LuPlus /> Add Item
           </Button>
           <Separator.Root className="mx-auto my-1 h-[1px] w-12 bg-gray-300" />
           <ConfirmationDialog
             trigger={
-              <Button size="large" color="danger">
+              <Button color="danger">
                 <LuTrash2 /> Clear List
               </Button>
             }
