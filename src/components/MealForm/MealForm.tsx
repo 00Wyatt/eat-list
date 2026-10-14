@@ -78,7 +78,14 @@ export const MealForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-4">
+    <form
+      onSubmit={handleSubmit(submit)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" && event.target instanceof HTMLInputElement) {
+          event.preventDefault();
+        }
+      }}
+      className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
         <label
           htmlFor="meal-name"
