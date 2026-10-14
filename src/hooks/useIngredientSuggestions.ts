@@ -5,13 +5,22 @@ import { db } from "../../firebase";
 export type IngredientSuggestion = {
   name: string;
   mealCount: number;
+  quantity: number;
+  unit: string;
+  category: string | null;
 };
 
 const getIngredientCounts = async (): Promise<IngredientSuggestion[]> => {
   const snapshot = await getDocs(collection(db, "meals"));
   const counts = new Map<string, IngredientSuggestion>();
 
-  snapshot.docs.forEach((mealDoc) => {
+  const meals = snapshot.docs.sort((first, second) =>
+    String(first.data().name ?? "").localeCompare(
+      String(second.data().name ?? ""),
+    ),
+  );
+
+  meals.forEach((mealDoc) => {
     const ingredients: unknown = mealDoc.data().ingredients;
     if (!Array.isArray(ingredients)) return;
 
@@ -27,10 +36,29 @@ const getIngredientCounts = async (): Promise<IngredientSuggestion[]> => {
       namesInMeal.add(normalizedName);
 
       const existing = counts.get(normalizedName);
-      counts.set(normalizedName, {
-        name: existing?.name ?? name.trim(),
-        mealCount: (existing?.mealCount ?? 0) + 1,
-      });
+      if (existing) {
+        existing.mealCount += 1;
+      } else {
+        const values = ingredient as Record<string, unknown>;
+        const quantity = values.quantity;
+        const unit = values.unit;
+        const category = values.category;
+        counts.set(normalizedName, {
+          name: name.trim(),
+          mealCount: 1,
+          quantity:
+            typeof quantity === "number" &&
+            Number.isFinite(quantity) &&
+            quantity >= 0
+              ? quantity
+              : 1,
+          unit: typeof unit === "string" ? unit : "",
+          category:
+            typeof category === "string" || category === null
+              ? category
+              : null,
+        });
+      }
     });
   });
 
@@ -65,11 +93,11 @@ export function useIngredientSuggestions(query: string) {
             .filter((ingredient) =>
               ingredient.name.toLowerCase().includes(normalizedQuery),
             )
-            .slice(0, 8),
+            .slice(0, 8), // limit displayed suggestions to 8
         );
       })
-      .catch((cause: unknown) => {
-        console.error("Failed to load ingredient suggestions:", cause);
+      .catch((problem: unknown) => {
+        console.error("Failed to load ingredient suggestions:", problem);
         ingredientIndex.current = null;
         if (isCurrent) {
           setSuggestions([]);

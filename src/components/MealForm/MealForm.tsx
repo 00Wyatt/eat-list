@@ -179,6 +179,24 @@ export const MealForm = ({
                                       suggestion.name,
                                       { shouldDirty: true },
                                     );
+                                    setValue(
+                                      `ingredients.${index}.quantity`,
+                                      suggestion.quantity,
+                                      { shouldDirty: true },
+                                    );
+                                    setValue(
+                                      `ingredients.${index}.unit`,
+                                      suggestion.unit,
+                                      { shouldDirty: true },
+                                    );
+                                    setValue(
+                                      `ingredients.${index}.category`,
+                                      MEAL_CATEGORIES.find(
+                                        (category) =>
+                                          category === suggestion.category,
+                                      ) ?? "",
+                                      { shouldDirty: true },
+                                    );
                                     setActiveIngredientIndex(null);
                                   }}>
                                   <span>{suggestion.name}</span>
