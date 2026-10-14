@@ -7,7 +7,7 @@ import { Checkbox, Separator } from "radix-ui";
 import { LuCheck, LuSparkles } from "react-icons/lu";
 import { FormSelect } from "./components/FormSelect";
 import { useMeals, useShoppingList, useWeeklyMeals } from "@/hooks";
-import { Button } from "../common/Button";
+import { Button } from "../common/Buttons/Button";
 import { WEEK_DAYS as daysOfWeek } from "@/utils/helpers";
 
 const schema = z.object({
@@ -158,7 +158,7 @@ export const SelectMealsForm = () => {
         />
         Keep existing shopping list items?
       </label>
-      <Button type="submit" size="large" loading={loading} className="mt-1">
+      <Button type="submit" loading={loading} className="mt-1">
         <LuSparkles /> Create List
       </Button>
       {errors.root && (

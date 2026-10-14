@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { LuArrowLeft } from "react-icons/lu";
 import { SelectMealsForm } from "@/components/SelectMealsForm";
-import { Button } from "@/components/common/Button/Button";
+import { Button } from "@/components/common/Buttons/Button";
 
 export const SelectMeals = () => {
   return (
@@ -11,7 +11,7 @@ export const SelectMeals = () => {
       </h2>
       <SelectMealsForm />
       <Link to="/">
-        <Button size="large" color="neutral" className="w-full">
+        <Button color="neutral" className="w-full">
           <LuArrowLeft /> Home
         </Button>
       </Link>

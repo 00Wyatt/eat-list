@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/common/Button";
+import { Button } from "@/components/common/Buttons/Button";
 import { parseShoppingListInput } from "../helpers/parseShoppingListInput";
 import type { ShoppingListItem } from "@/types";
 
@@ -50,7 +50,7 @@ export const ShoppingListAddItem = ({
         className="my-[1px] flex-1 rounded border border-gray-300 px-2 py-1.5"
         placeholder="Enter a value"
       />
-      <Button size="large" type="submit" className="px-4">
+      <Button type="submit" className="px-4">
         Add
       </Button>
       {errors.item && (

@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/common/Button";
+import { Button } from "@/components/common/Buttons/Button";
 
 const schema = z.object({
   email: z.email("Invalid email address"),
@@ -74,7 +74,7 @@ export const LoginForm = ({ onSuccess }: LoginFormProps) => {
       {errors.root && (
         <span className="text-sm text-red-500">{errors.root.message}</span>
       )}
-      <Button type="submit" color="emphasized" size="large" className="mt-1">
+      <Button type="submit" color="emphasized" className="mt-1">
         Login
       </Button>
     </form>

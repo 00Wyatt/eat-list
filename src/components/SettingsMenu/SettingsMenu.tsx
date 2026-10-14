@@ -1,7 +1,7 @@
 import { Popover } from "radix-ui";
 import { LuSettings } from "react-icons/lu";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "../common/Button";
+import { Button } from "../common/Buttons/Button";
 
 export const SettingsMenu = () => {
   const { user, logout } = useAuth();
@@ -9,14 +9,21 @@ export const SettingsMenu = () => {
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
-        <button className="p-1 text-xl text-gray-800" aria-label="Settings">
+        <Button
+          variant="ghost"
+          className="p-1 text-xl text-gray-800"
+          aria-label="Settings">
           <LuSettings />
-        </button>
+        </Button>
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Content className="mr-3 flex max-w-40 flex-col gap-2 rounded-lg border-t-2 border-sky-200 bg-white p-2.5 text-gray-900 shadow-lg">
           <p className="truncate">{user?.email}</p>
-          <Button color="danger" className="w-full" onClick={logout}>
+          <Button
+            color="danger"
+            size="small"
+            className="w-full"
+            onClick={logout}>
             Logout
           </Button>
           <Popover.Arrow className="fill-sky-200" />

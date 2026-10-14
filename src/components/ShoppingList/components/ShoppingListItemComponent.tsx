@@ -4,6 +4,7 @@ import { LuCheck, LuX } from "react-icons/lu";
 import { twMerge } from "tailwind-merge";
 import type { ShoppingListItem } from "@/types";
 import { ShoppingListItemActionsMenu } from "./ShoppingListItemActionsMenu";
+import { Button } from "@/components/common/Buttons/Button";
 
 type ShoppingListItemProps = {
   shoppingListItem: ShoppingListItem;
@@ -90,12 +91,12 @@ export const ShoppingListItemComponent = ({
         onRenameItemName={onRenameItemName}
       />
       {onRemove && (
-        <button
-          type="button"
+        <Button
+          variant="ghost"
           className="p-0.5 text-2xl text-sky-900"
           onClick={onRemove}>
           <LuX />
-        </button>
+        </Button>
       )}
     </li>
   );
