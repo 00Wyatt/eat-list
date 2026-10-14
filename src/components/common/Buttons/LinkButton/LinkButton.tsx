@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { twMerge } from "tailwind-merge";
 import { CgSpinner } from "react-icons/cg";
 import {
@@ -8,9 +9,12 @@ import {
 } from "../styles";
 
 type LinkButtonProps = React.AnchorHTMLAttributes<HTMLAnchorElement> &
-  ButtonBaseProps;
+  ButtonBaseProps & {
+    to?: string;
+  };
 
 export const LinkButton = ({
+  to = "#",
   color = "primary",
   size = "large",
   variant = "solid",
@@ -24,7 +28,8 @@ export const LinkButton = ({
   }
 
   return (
-    <a
+    <Link
+      to={props.href || to}
       className={twMerge(
         "flex items-center justify-center gap-1 rounded duration-200",
         `${colorClasses[color]}`,
@@ -34,6 +39,6 @@ export const LinkButton = ({
       )}
       {...props}>
       {loading ? <CgSpinner size={24} className="animate-spin" /> : children}
-    </a>
+    </Link>
   );
 };

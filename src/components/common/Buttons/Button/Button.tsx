@@ -12,7 +12,7 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
 
 export const Button = ({
   color = "primary",
-  size = "small",
+  size = "large",
   variant = "solid",
   loading = false,
   className,

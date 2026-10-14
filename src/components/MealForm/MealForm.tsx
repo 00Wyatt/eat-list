@@ -7,6 +7,7 @@ import {
   mealFormSchema,
   type MealFormValues,
 } from "./mealFormSchema";
+import { Separator } from "radix-ui";
 
 type MealFormProps = {
   initialValues: MealFormValues;
@@ -182,6 +183,8 @@ export const MealForm = ({
           <LuPlus aria-hidden="true" /> Add Ingredient
         </Button>
       </fieldset>
+
+      <Separator.Root className="mx-auto h-[1px] w-12 bg-gray-300" />
 
       {errors.root && (
         <p role="alert" className="text-sm text-red-600">

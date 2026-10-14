@@ -45,6 +45,7 @@ export const ShoppingListItemActionsMenu = ({
           onClick={(e) => e.stopPropagation()}>
           <div className="flex items-center justify-between gap-2">
             <Button
+            size="small"
               className="h-8 w-8 bg-sky-50 text-sky-900"
               aria-label="Decrease quantity"
               disabled={
@@ -65,6 +66,7 @@ export const ShoppingListItemActionsMenu = ({
               Qty: {shoppingListItem.quantityRounded}
             </div>
             <Button
+            size="small"
               className="h-8 w-8 bg-sky-50 text-sky-900"
               aria-label="Increase quantity"
               disabled={quantityUpdating}

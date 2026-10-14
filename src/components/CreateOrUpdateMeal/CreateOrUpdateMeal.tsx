@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
 import { LuPencil, LuPlus } from "react-icons/lu";
 import { useMeals } from "@/hooks";
 import type { Meal } from "@/types";
 import { CreateOrUpdateMealSkeleton } from "./components/CreateOrUpdateMealSkeleton";
+import { LinkButton } from "../common/Buttons/LinkButton/LinkButton";
 
 export const CreateOrUpdateMeal = () => {
   const { fetchMeals } = useMeals();
@@ -43,11 +43,9 @@ export const CreateOrUpdateMeal = () => {
       <h2 className="text-sm font-medium tracking-wider text-gray-800 uppercase">
         Add or Edit a Meal
       </h2>
-      <Link
-        to="/meals/create"
-        className="flex items-center justify-center gap-1 rounded bg-sky-100 px-4 py-2 text-sky-600 duration-200">
+      <LinkButton to="/meals/create">
         <LuPlus aria-hidden="true" /> Add New Meal
-      </Link>
+      </LinkButton>
 
       <div className="flex flex-col gap-2">
         <label
@@ -77,11 +75,9 @@ export const CreateOrUpdateMeal = () => {
       </div>
 
       {selectedMeal && (
-        <Link
-          to={`/meals/${selectedMeal.id}/edit`}
-          className="flex items-center justify-center gap-1 rounded bg-gray-100 px-4 py-2 text-gray-800 duration-200">
+        <LinkButton color="neutral" to={`/meals/${selectedMeal.id}/edit`}>
           <LuPencil aria-hidden="true" /> Edit Meal
-        </Link>
+        </LinkButton>
       )}
       {meals === null && !loading && (
         <p role="alert" className="text-sm text-red-600">
