@@ -9,7 +9,7 @@ import { sortDays, WEEK_DAYS } from "@/utils/helpers";
 import { useMeals, useWeeklyMeals } from "@/hooks";
 import { WeeklyMealsSectionSkeleton } from "./components/WeeklyMealsSectionSkeleton";
 import type { WeeklyMeals } from "@/types";
-import { SearchableSelect } from "../common/SearchableSelect";
+import { Combobox } from "../common/Combobox";
 
 export const WeeklyMealsSection = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -160,7 +160,7 @@ export const WeeklyMealsSection = () => {
                       {day}:
                     </span>{" "}
                     {isEditing ? (
-                      <SearchableSelect
+                      <Combobox
                         id={`weekly-meal-${day.toLowerCase()}`}
                         placeholder="Search or enter a meal"
                         options={(meals ?? []).map((mealOption) => ({
@@ -171,6 +171,8 @@ export const WeeklyMealsSection = () => {
                         onValueChange={(value) =>
                           handleMealSelectChange(day, value)
                         }
+                        label={`${day} meal`}
+                        labelVisibility="sr-only"
                         allowCustomValue
                       />
                     ) : meal ? (

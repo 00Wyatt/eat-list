@@ -4,7 +4,7 @@ import { useMeals } from "@/hooks";
 import type { Meal } from "@/types";
 import { CreateOrUpdateMealSkeleton } from "./components/CreateOrUpdateMealSkeleton";
 import { LinkButton } from "../common/Buttons/LinkButton/LinkButton";
-import { SearchableSelect } from "../common/SearchableSelect";
+import { Combobox } from "../common/Combobox";
 
 export const CreateOrUpdateMeal = () => {
   const { fetchMeals } = useMeals();
@@ -49,7 +49,7 @@ export const CreateOrUpdateMeal = () => {
       </LinkButton>
 
       <div className="flex flex-col gap-2">
-        <SearchableSelect
+        <Combobox
           id="meal-to-update"
           label="Choose a meal to edit"
           placeholder={

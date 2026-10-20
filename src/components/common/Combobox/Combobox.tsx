@@ -1,33 +1,35 @@
 import { useState } from "react";
 
-export type SearchableSelectOption = {
+export type ComboboxOption = {
   value: string;
   label: string;
 };
 
-type SearchableSelectProps = {
+type ComboboxProps = {
   id: string;
-  options: SearchableSelectOption[];
+  options: ComboboxOption[];
   value: string;
   onValueChange: (value: string) => void;
   onBlur?: () => void;
   label?: string;
+  labelVisibility?: "visible" | "sr-only";
   placeholder?: string;
   allowCustomValue?: boolean;
   disabled?: boolean;
 };
 
-export const SearchableSelect = ({
+export const Combobox = ({
   id,
   options,
   value,
   onValueChange,
   onBlur,
   label,
+  labelVisibility = "visible",
   placeholder = "Search...",
   allowCustomValue = false,
   disabled = false,
-}: SearchableSelectProps) => {
+}: ComboboxProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const selectedOption = options.find((option) => option.value === value);
@@ -38,7 +40,7 @@ export const SearchableSelect = ({
     ? query
     : (selectedOption?.label ?? (allowCustomValue ? value : ""));
 
-  const selectOption = (option: SearchableSelectOption) => {
+  const selectOption = (option: ComboboxOption) => {
     onValueChange(option.value);
     setQuery("");
     setIsOpen(false);
@@ -46,9 +48,15 @@ export const SearchableSelect = ({
 
   return (
     <div
-      className={`relative flex min-w-0 w-full flex-col gap-1 ${isOpen ? "z-50" : ""}`}>
+      className={`relative flex w-full min-w-0 flex-col gap-1 ${isOpen ? "z-50" : ""}`}>
       {label ? (
-        <label htmlFor={id} className="text-sm font-medium text-gray-800">
+        <label
+          htmlFor={id}
+          className={
+            labelVisibility === "sr-only"
+              ? "sr-only"
+              : "text-sm font-medium text-gray-800"
+          }>
           {label}
         </label>
       ) : null}

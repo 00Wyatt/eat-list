@@ -5,8 +5,8 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox, Separator } from "radix-ui";
 import { LuCheck, LuSparkles } from "react-icons/lu";
-import { FormSelect } from "./components/FormSelect";
-import { SearchableSelect } from "../common/SearchableSelect";
+import { Select } from "@/components/common/Select";
+import { Combobox } from "../common/Combobox";
 import { useMeals, useShoppingList, useWeeklyMeals } from "@/hooks";
 import { Button } from "../common/Buttons/Button";
 import { WEEK_DAYS as daysOfWeek } from "@/utils/helpers";
@@ -115,7 +115,7 @@ export const SelectMealsForm = () => {
             control={control}
             defaultValue=""
             render={({ field }) => (
-              <SearchableSelect
+              <Combobox
                 id={day.toLowerCase()}
                 label={day}
                 placeholder="Search or enter a meal"
@@ -133,7 +133,7 @@ export const SelectMealsForm = () => {
         </div>
       ))}
       <Separator.Root className="my-2 h-[1px] w-full bg-gray-300" />
-      <FormSelect
+      <Select
         id="startingDay"
         label="Starting Day"
         placeholder="Select a starting day (Optional)"
