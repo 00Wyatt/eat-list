@@ -4,6 +4,7 @@ import { useMeals } from "@/hooks";
 import type { Meal } from "@/types";
 import { CreateOrUpdateMealSkeleton } from "./components/CreateOrUpdateMealSkeleton";
 import { LinkButton } from "../common/Buttons/LinkButton/LinkButton";
+import { SearchableSelect } from "../common/SearchableSelect";
 
 export const CreateOrUpdateMeal = () => {
   const { fetchMeals } = useMeals();
@@ -48,30 +49,24 @@ export const CreateOrUpdateMeal = () => {
       </LinkButton>
 
       <div className="flex flex-col gap-2">
-        <label
-          htmlFor="meal-to-update"
-          className="text-sm font-medium text-gray-800">
-          Choose a meal to edit
-        </label>
-        <select
+        <SearchableSelect
           id="meal-to-update"
-          value={selectedMealId}
-          onChange={(event) => setSelectedMealId(event.target.value)}
-          disabled={!meals?.length}
-          className="w-full rounded border border-gray-300 bg-white p-2 disabled:cursor-not-allowed disabled:bg-gray-100">
-          <option value="">
-            {meals == null
+          label="Choose a meal to edit"
+          placeholder={
+            meals == null
               ? "Unable to load meals"
               : meals.length === 0
                 ? "No meals available"
-                : "Select a meal"}
-          </option>
-          {meals?.map((meal) => (
-            <option key={meal.id} value={meal.id}>
-              {meal.name}
-            </option>
-          ))}
-        </select>
+                : "Search meals"
+          }
+          options={(meals ?? []).map((meal) => ({
+            value: meal.id,
+            label: meal.name,
+          }))}
+          value={selectedMealId}
+          onValueChange={setSelectedMealId}
+          disabled={!meals?.length}
+        />
       </div>
 
       {selectedMeal && (

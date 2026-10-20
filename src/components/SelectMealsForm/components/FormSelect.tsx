@@ -1,22 +1,19 @@
 import type { UseFormRegisterReturn } from "react-hook-form";
-import type { Meal } from "@/types";
 
 type FormSelectProps = {
   id: string;
   label?: string;
   placeholder?: string;
-  mealList?: Meal[];
   register: UseFormRegisterReturn;
-  extraOptions?: { value: string; label: string }[];
+  options?: { value: string; label: string }[];
 };
 
 export const FormSelect = ({
   id,
   label,
   placeholder,
-  mealList,
   register,
-  extraOptions,
+  options,
 }: FormSelectProps) => {
   return (
     <div className="flex flex-col gap-1">
@@ -34,12 +31,7 @@ export const FormSelect = ({
             {placeholder}
           </option>
         )}
-        {mealList?.map((meal) => (
-          <option key={meal.id} value={meal.id}>
-            {meal.name}
-          </option>
-        ))}
-        {extraOptions?.map((opt) => (
+        {options?.map((opt) => (
           <option key={opt.value} value={opt.value}>
             {opt.label}
           </option>

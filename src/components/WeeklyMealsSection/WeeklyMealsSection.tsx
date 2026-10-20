@@ -9,14 +9,12 @@ import { sortDays, WEEK_DAYS } from "@/utils/helpers";
 import { useMeals, useWeeklyMeals } from "@/hooks";
 import { WeeklyMealsSectionSkeleton } from "./components/WeeklyMealsSectionSkeleton";
 import type { WeeklyMeals } from "@/types";
+import { SearchableSelect } from "../common/SearchableSelect";
 
 export const WeeklyMealsSection = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedWeeklyMeals, setEditedWeeklyMeals] =
     useState<WeeklyMeals | null>(null);
-  const [customMealNames, setCustomMealNames] = useState<
-    Record<string, string>
-  >({});
   const [selectionDrafts, setSelectionDrafts] = useState<
     Record<string, string>
   >({});
@@ -37,24 +35,13 @@ export const WeeklyMealsSection = () => {
       WEEK_DAYS.map((day) => [day, data?.[day] ?? { name: "" }]),
     ) as WeeklyMeals;
 
-    const nextCustomNames = WEEK_DAYS.reduce(
-      (acc, day) => {
-        const meal = data?.[day];
-        if (!meal?.id && meal?.name) {
-          acc[day] = meal.name;
-        }
-        return acc;
-      },
-      {} as Record<string, string>,
-    );
-
     const nextSelectionDrafts = WEEK_DAYS.reduce(
       (acc, day) => {
         const meal = data?.[day];
         if (meal?.id) {
           acc[day] = meal.id;
         } else if (meal?.name) {
-          acc[day] = "__custom__";
+          acc[day] = meal.name;
         } else {
           acc[day] = "";
         }
@@ -62,9 +49,7 @@ export const WeeklyMealsSection = () => {
       },
       {} as Record<string, string>,
     );
-
     setEditedWeeklyMeals(baseMeals);
-    setCustomMealNames(nextCustomNames);
     setSelectionDrafts(nextSelectionDrafts);
   };
 
@@ -107,10 +92,6 @@ export const WeeklyMealsSection = () => {
   const handleMealSelectChange = (day: string, value: string) => {
     setSelectionDrafts((prev) => ({ ...prev, [day]: value }));
 
-    if (value === "__custom__") {
-      return;
-    }
-
     setEditedWeeklyMeals((prev) => {
       if (!prev) return prev;
 
@@ -126,23 +107,7 @@ export const WeeklyMealsSection = () => {
         ...prev,
         [day]: selectedMeal
           ? { id: selectedMeal.id, name: selectedMeal.name }
-          : { name: "" },
-      };
-    });
-  };
-
-  const handleCustomNameChange = (day: string, value: string) => {
-    setCustomMealNames((prev) => ({ ...prev, [day]: value }));
-
-    if (!value.trim()) {
-      return;
-    }
-
-    setEditedWeeklyMeals((prev) => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        [day]: { name: value },
+          : { name: value },
       };
     });
   };
@@ -180,14 +145,12 @@ export const WeeklyMealsSection = () => {
             {daysToRender.map((day) => {
               const mealObj = activeWeeklyMeals?.[day] ?? { name: "" };
               const meal = meals?.find((m) => m.id === mealObj.id);
-              const isCustomMeal =
-                isEditing && selectionDrafts[day] === "__custom__";
               const currentSelection = isEditing
                 ? (selectionDrafts[day] ?? "")
                 : meal?.id
                   ? meal.id
                   : mealObj.name
-                    ? "__custom__"
+                    ? mealObj.name
                     : "";
 
               return (
@@ -197,34 +160,19 @@ export const WeeklyMealsSection = () => {
                       {day}:
                     </span>{" "}
                     {isEditing ? (
-                      <div className="flex w-full flex-col gap-2">
-                        <select
-                          value={currentSelection}
-                          onChange={(event) =>
-                            handleMealSelectChange(day, event.target.value)
-                          }
-                          className="w-full min-w-0 truncate rounded border border-gray-300 p-2">
-                          <option value="">Select a meal</option>
-                          {meals?.map((mealOption) => (
-                            <option key={mealOption.id} value={mealOption.id}>
-                              {mealOption.name}
-                            </option>
-                          ))}
-                          <option value="__custom__">Other</option>
-                        </select>
-
-                        {isCustomMeal && (
-                          <input
-                            type="text"
-                            value={customMealNames[day] ?? ""}
-                            onChange={(event) =>
-                              handleCustomNameChange(day, event.target.value)
-                            }
-                            placeholder="Enter a meal name"
-                            className="w-full rounded border border-gray-300 p-2"
-                          />
-                        )}
-                      </div>
+                      <SearchableSelect
+                        id={`weekly-meal-${day.toLowerCase()}`}
+                        placeholder="Search or enter a meal"
+                        options={(meals ?? []).map((mealOption) => ({
+                          value: mealOption.id,
+                          label: mealOption.name,
+                        }))}
+                        value={currentSelection}
+                        onValueChange={(value) =>
+                          handleMealSelectChange(day, value)
+                        }
+                        allowCustomValue
+                      />
                     ) : meal ? (
                       <Modal
                         triggerText={meal.name}
@@ -262,10 +210,7 @@ export const WeeklyMealsSection = () => {
           <div className="flex flex-col gap-2">
             {isEditing ? (
               <>
-                <Button
-                  color="primary"
-                  className="w-full"
-                  onClick={handleSave}>
+                <Button color="primary" className="w-full" onClick={handleSave}>
                   Save Changes
                 </Button>
 

@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox, Separator } from "radix-ui";
 import { LuCheck, LuSparkles } from "react-icons/lu";
 import { FormSelect } from "./components/FormSelect";
+import { SearchableSelect } from "../common/SearchableSelect";
 import { useMeals, useShoppingList, useWeeklyMeals } from "@/hooks";
 import { Button } from "../common/Buttons/Button";
 import { WEEK_DAYS as daysOfWeek } from "@/utils/helpers";
@@ -23,9 +24,9 @@ const schema = z.object({
 });
 
 export type SelectMealsFormData = z.infer<typeof schema>;
+type MealDay = Exclude<keyof SelectMealsFormData, "keepCurrentList" | "startingDay">;
 
 export const SelectMealsForm = () => {
-  const [customMeals, setCustomMeals] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
   const {
@@ -34,7 +35,6 @@ export const SelectMealsForm = () => {
     formState: { errors },
     clearErrors,
     setError,
-    watch,
     control,
   } = useForm<SelectMealsFormData>({
     resolver: zodResolver(schema),
@@ -48,11 +48,7 @@ export const SelectMealsForm = () => {
 
   useEffect(() => {
     fetchMeals();
-  }, []);
-
-  const handleCustomMealChange = (day: string, value: string) => {
-    setCustomMeals((prev) => ({ ...prev, [day]: value }));
-  };
+  }, [fetchMeals]);
 
   const onSubmit = async (data: SelectMealsFormData) => {
     setLoading(true);
@@ -60,13 +56,15 @@ export const SelectMealsForm = () => {
 
     const weeklyMeals = Object.fromEntries(
       daysOfWeek.map((day) => {
-        const selected = data[day as keyof SelectMealsFormData];
-        if (selected === "__other__") {
-          const name = customMeals[day]?.trim();
-          return [day, name ? { name } : { name: "" }];
-        }
+        const selected = data[day as MealDay];
         const meal = meals?.find((m) => m.id === selected);
-        return [day, meal ? { id: meal.id, name: meal.name } : { name: "" }];
+        const customName = selected.trim();
+        return [
+          day,
+          meal
+            ? { id: meal.id, name: meal.name }
+            : { name: customName },
+        ];
       }),
     );
 
@@ -112,24 +110,26 @@ export const SelectMealsForm = () => {
       className="flex w-full flex-col gap-3">
       {daysOfWeek.map((day) => (
         <div key={day}>
-          <FormSelect
-            id={day.toLowerCase()}
-            label={day}
-            placeholder={`Select a meal for ${day}`}
-            mealList={meals ?? []}
-            register={register(day as keyof SelectMealsFormData)}
-            extraOptions={[{ value: "__other__", label: "Other" }]}
+          <Controller
+            name={day as MealDay}
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <SearchableSelect
+                id={day.toLowerCase()}
+                label={day}
+                placeholder="Search or enter a meal"
+                options={(meals ?? []).map((meal) => ({
+                  value: meal.id,
+                  label: meal.name,
+                }))}
+                value={field.value}
+                onValueChange={field.onChange}
+                onBlur={field.onBlur}
+                allowCustomValue
+              />
+            )}
           />
-          {watch(day as keyof SelectMealsFormData) === "__other__" && (
-            <input
-              autoFocus
-              type="text"
-              placeholder="Enter meal name"
-              value={customMeals[day] || ""}
-              onChange={(e) => handleCustomMealChange(day, e.target.value)}
-              className="mt-1 w-full rounded border border-gray-300 p-2"
-            />
-          )}
         </div>
       ))}
       <Separator.Root className="my-2 h-[1px] w-full bg-gray-300" />
@@ -137,8 +137,8 @@ export const SelectMealsForm = () => {
         id="startingDay"
         label="Starting Day"
         placeholder="Select a starting day (Optional)"
-        register={register("startingDay" as keyof SelectMealsFormData)}
-        extraOptions={startingDayOptions}
+        register={register("startingDay")}
+        options={startingDayOptions}
       />
       <label className="mt-1 flex items-center gap-2 self-start">
         <Controller
