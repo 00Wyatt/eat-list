@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Separator } from "radix-ui";
 import { LuCalendarPlus, LuPencil, LuTrash2 } from "react-icons/lu";
-import { Modal } from "../Modal";
+import { Modal } from "../common/Modal";
 import { ConfirmationDialog } from "../common/ConfirmationDialog";
 import { Button } from "../common/Buttons/Button";
 import { sortDays, WEEK_DAYS } from "@/utils/helpers";
