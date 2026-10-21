@@ -4,6 +4,7 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LuPlus, LuTrash2 } from "react-icons/lu";
 import { Button } from "@/components/common/Buttons/Button";
+import { Select } from "@/components/common/Select";
 import { useIngredientSuggestions } from "@/hooks";
 import {
   MEAL_CATEGORIES,
@@ -94,6 +95,7 @@ export const MealForm = ({
         </label>
         <input
           id="meal-name"
+          placeholder="Meal name"
           {...register("name")}
           className="w-full rounded border border-gray-300 p-2"
           autoComplete="off"
@@ -277,22 +279,18 @@ export const MealForm = ({
                 />
               </div>
               <div className="min-w-0">
-                <label
-                  htmlFor={`ingredient-category-${index}`}
-                  className="sr-only">
-                  Category for ingredient {index + 1}
-                </label>
-                <select
+                <Select
                   id={`ingredient-category-${index}`}
-                  {...register(`ingredients.${index}.category`)}
-                  className="w-full rounded border border-gray-300 bg-white px-2 py-1.5">
-                  <option value="">Category</option>
-                  {MEAL_CATEGORIES.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
+                  label={`Category for ingredient ${index + 1}`}
+                  labelVisibility="sr-only"
+                  placeholder="Category"
+                  register={register(`ingredients.${index}.category`)}
+                  className="px-2 py-1.5"
+                  options={MEAL_CATEGORIES.map((category) => ({
+                    value: category,
+                    label: category,
+                  }))}
+                />
               </div>
             </div>
           </div>
