@@ -110,7 +110,7 @@ export const UpdateMeal = () => {
 
     try {
       await updateMeal(mealId, values);
-      navigate("/");
+      navigate("/meals");
     } catch (error) {
       console.error("Failed to update meal:", error);
       throw new Error("Unable to save this meal. Please try again.");
@@ -132,7 +132,7 @@ export const UpdateMeal = () => {
         <MealForm
           initialValues={pageState.initialValues}
           onSubmit={handleSubmit}
-          onCancel={() => navigate("/")}
+          onCancel={() => navigate("/meals")}
           submitLabel="Save Changes"
         />
       )}

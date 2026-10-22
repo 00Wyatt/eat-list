@@ -1,6 +1,7 @@
 import { Outlet } from "react-router";
 import { Header } from "../Header";
 import { Footer } from "../Footer";
+import { BottomNavigation } from "../BottomNavigation";
 
 export const Layout = () => {
   return (
@@ -10,6 +11,7 @@ export const Layout = () => {
         <Outlet />
       </main>
       <Footer />
+      <BottomNavigation />
     </>
   );
 };

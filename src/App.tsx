@@ -7,6 +7,8 @@ import { SelectMeals } from "./pages/SelectMeals";
 import { Layout } from "./components/Layout";
 import { UpdateMeal } from "./pages/UpdateMeal";
 import { CreateMeal } from "./pages/CreateMeal";
+import { Meals } from "./pages/Meals";
+import { WeeklyMeals } from "./pages/WeeklyMeals";
 
 const appTitle = "Eat List";
 
@@ -35,10 +37,30 @@ export default function App() {
                 }
               />
               <Route
-                path="/select-meals"
+                path="/weekly-meals"
+                element={
+                  <ProtectedRoute>
+                    <WeeklyMeals />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/weekly-meals/select"
                 element={
                   <ProtectedRoute>
                     <SelectMeals />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/select-meals"
+                element={<Navigate to="/weekly-meals/select" replace />}
+              />
+              <Route
+                path="/meals"
+                element={
+                  <ProtectedRoute>
+                    <Meals />
                   </ProtectedRoute>
                 }
               />
@@ -51,12 +73,16 @@ export default function App() {
                 }
               />
               <Route
-                path="/meals/create"
+                path="/meals/new"
                 element={
                   <ProtectedRoute>
                     <CreateMeal />
                   </ProtectedRoute>
                 }
+              />
+              <Route
+                path="/meals/create"
+                element={<Navigate to="/meals/new" replace />}
               />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>

@@ -138,7 +138,7 @@ export const WeeklyMealsSection = () => {
       {activeWeeklyMeals ? (
         <>
           <h2 className="text-sm font-medium tracking-wider text-gray-800 uppercase">
-            Weekly Meals:
+            Weekly Meals
           </h2>
 
           <ul className="flex flex-col gap-2">
@@ -225,7 +225,7 @@ export const WeeklyMealsSection = () => {
               </>
             ) : (
               <>
-                <Link to="/select-meals">
+                <Link to="/weekly-meals/select">
                   <Button className="w-full">
                     <LuCalendarPlus /> Select Meals
                   </Button>
@@ -255,7 +255,7 @@ export const WeeklyMealsSection = () => {
           </div>
         </>
       ) : (
-        <Link to="/select-meals">
+        <Link to="/weekly-meals/select">
           <Button className="w-full">
             <LuCalendarPlus /> Select Meals
           </Button>
