@@ -40,11 +40,11 @@ export const CreateOrUpdateMeal = () => {
   }
 
   return (
-    <section className="flex flex-col gap-3">
+    <section className="flex flex-col gap-4">
       <h2 className="text-sm font-medium tracking-wider text-gray-800 uppercase">
         Add or Edit a Meal
       </h2>
-      <LinkButton to="/meals/create">
+      <LinkButton to="/meals/new">
         <LuPlus aria-hidden="true" /> Add New Meal
       </LinkButton>
 

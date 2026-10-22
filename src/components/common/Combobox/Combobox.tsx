@@ -94,7 +94,7 @@ export const Combobox = ({
         <ul
           id={`${id}-options`}
           role="listbox"
-          className="absolute top-full left-0 z-20 mt-1 max-h-56 w-full overflow-y-auto rounded border border-gray-300 bg-white py-1 shadow-lg">
+          className="absolute top-full left-0 z-20 mt-1 max-h-72 w-full overflow-y-auto rounded border border-gray-300 bg-white py-1 shadow-lg">
           {filteredOptions.length > 0 ? (
             filteredOptions.map((option) => (
               <li

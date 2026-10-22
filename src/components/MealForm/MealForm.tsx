@@ -219,7 +219,7 @@ export const MealForm = ({
                               ))
                             ) : (
                               <p className="px-3 py-2 text-sm text-gray-600">
-                                No matching ingredients
+                                No matching ingredients.
                               </p>
                             )}
                           </div>

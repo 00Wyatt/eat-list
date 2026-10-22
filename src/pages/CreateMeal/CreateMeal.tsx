@@ -15,7 +15,7 @@ export const CreateMeal = () => {
   const handleSubmit = async (values: MealFormValues) => {
     try {
       await createMeal(values);
-      navigate("/");
+      navigate("/meals");
     } catch (error) {
       console.error("Failed to create meal:", error);
       throw new Error("Unable to create this meal. Please try again.");
@@ -23,14 +23,14 @@ export const CreateMeal = () => {
   };
 
   return (
-    <div className="flex w-full flex-col gap-3 p-5">
-      <h2 className="mb-1 text-sm font-medium tracking-wider text-gray-800 uppercase">
+    <div className="flex flex-col gap-4 p-5">
+      <h2 className="text-sm font-medium tracking-wider text-gray-800 uppercase">
         Create Meal
       </h2>
       <MealForm
         initialValues={initialValues}
         onSubmit={handleSubmit}
-        onCancel={() => navigate("/")}
+        onCancel={() => navigate("/meals")}
         submitLabel="Create Meal"
       />
     </div>

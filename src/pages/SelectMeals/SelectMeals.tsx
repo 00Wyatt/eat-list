@@ -10,9 +10,9 @@ export const SelectMeals = () => {
         Select Meals
       </h2>
       <SelectMealsForm />
-      <Link to="/">
+      <Link to="/weekly-meals">
         <Button color="neutral" className="w-full">
-          <LuArrowLeft /> Home
+          <LuArrowLeft /> Weekly Meals
         </Button>
       </Link>
     </div>
